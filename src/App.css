@@ -1,6 +1,6 @@
 /* Main container */
 .chat-container {
-  background-image: url('/inlogic_backgroud.svg');
+  background-image: url(./assets/inlogic_backgroud.svg);
   height: 100vh;
   display: flex;
   flex-direction: column;
