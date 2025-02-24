@@ -112,7 +112,7 @@
 
 /* Input area */
 .input-container {
-  margin-top: 60%;
+  margin-top: 63%;
   margin-bottom: 3%;
   display: flex;
   padding-left: 50px;
@@ -146,6 +146,14 @@
 
 .browse_files_button {
   background-color: white;
+  color: #3354ff;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 70%;
 }
 
 .chat-container h1 {
