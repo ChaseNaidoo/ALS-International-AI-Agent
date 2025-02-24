@@ -6,10 +6,10 @@ const Chatbot = () => {
   const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem("chatMessages")) || [
     { text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.", sender: "bot" }
   ]);
-  const [userInput, setUserInput] = useState("");
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
@@ -55,6 +55,14 @@ const Chatbot = () => {
 
     setIsUploading(false);
     setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Clear the file input field
+    }
+  };
+
+  const handleRestartChat = () => {
+    setMessages([{ text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.", sender: "bot" }]);
+    localStorage.removeItem("chatMessages");
   };
 
   return (
@@ -81,6 +89,7 @@ const Chatbot = () => {
             type="file"
             accept="application/pdf"
             onChange={(e) => setFile(e.target.files[0])}
+            ref={fileInputRef}
           />
           <button 
             className="send-button" 
@@ -89,6 +98,11 @@ const Chatbot = () => {
           >
             {isUploading ? "Uploading..." : "Upload PDF"}
           </button>
+        </div>
+        <div className="restart_button_container">
+        <button className="restart_button" onClick={handleRestartChat}>
+          Restart Chat
+        </button>
         </div>
       </div>
     </div>
