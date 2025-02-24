@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import "./App.css";
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem("chatMessages")) || [
+  const initialMessages = [
     { text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.", sender: "bot" }
-  ]);
-  const [userInput, setUserInput] = useState("");
+  ];
+
+  const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem("chatMessages")) || initialMessages);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
@@ -57,6 +58,35 @@ const Chatbot = () => {
     setFile(null);
   };
 
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const droppedFile = event.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type === "application/pdf") {
+      setFile(droppedFile);
+      setMessages((prev) => [
+        ...prev,
+        { text: "PDF file dropped successfully! Click 'Upload PDF' to continue.", sender: "bot" }
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { text: "Please upload a valid PDF file.", sender: "bot" }
+      ]);
+    }
+  };
+
+  const resetChat = () => {
+    setMessages(initialMessages);
+    localStorage.setItem("chatMessages", JSON.stringify(initialMessages));
+  };
+
   return (
     <div className="chat-container">
       <h1>ALS International Recruitment Assistant</h1>
@@ -75,19 +105,42 @@ const Chatbot = () => {
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
 
-        <div className="input-container">
+        {/* File Upload Section */}
+        <motion.div
+          className="file-upload-container"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          <p>Drag and drop a PDF here, or click below to browse for the file</p>
+          
           <input
-            className="browse_files_button"
             type="file"
             accept="application/pdf"
             onChange={(e) => setFile(e.target.files[0])}
+            id="file-input"
+            style={{ display: "none" }}
           />
-          <button 
-            className="send-button" 
-            onClick={handleFileUpload} 
-            disabled={!file || isUploading}
-          >
+
+          <div className="browse_files_container">
+            <label htmlFor="file-input" className="browse_files_button">
+              Browse Files
+            </label>
+          </div>
+        </motion.div>
+
+        {/* Upload Button */}
+        {file && !isUploading && (
+          <button className="send-button" onClick={handleFileUpload} disabled={!file || isUploading}>
             {isUploading ? "Uploading..." : "Upload PDF"}
+          </button>
+        )}
+
+        {/* Reset Chat Button */}
+        <div className="restart_button_container">
+          <button className="restart_button" onClick={resetChat}>
+            Reset Chat
           </button>
         </div>
       </div>

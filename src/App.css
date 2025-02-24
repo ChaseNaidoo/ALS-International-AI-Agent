@@ -23,7 +23,7 @@
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 50px 0px 50px 20px;
+  padding: 50px 0px 11% 20px;
 }
 
 /* Pseudo-elements for extending lines */
@@ -118,6 +118,26 @@
   padding-left: 50px;
 }
 
+.file-upload-container {
+  width: 39%;
+  margin-top: 24%;
+  margin-left: 4.2%;
+  padding: 10px 20px 20px 20px;
+  border: none;
+  border-radius: 30px 30px 30px 10px;
+  text-align: left;
+  cursor: pointer;
+  background-color: white;
+}
+
+.file-upload-container p {
+  color: #3354ff;
+}
+
+.input-container p {
+  padding-bottom: 15%;
+}
+
 /* Input field */
 .input-box {
   background-color: white;
@@ -144,8 +164,28 @@
   background-color: #2563eb;
 }
 
-.browse_files_button {
+.uploadPDF_message {
   background-color: white;
+  color: #3354ff;
+  align-self: flex-start;
+  border-radius: 30px 30px 30px 10px;
+  padding: 10px 20px 20px 20px;
+  width: 85%;
+}
+
+.browse_files_container {
+  margin-top: 10%;
+}
+
+/* Browse Files */
+.browse_files_button {
+  background-color: #3354ff;
+  color: white;
+  border: none;
+  padding: 10px 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .chat-container h1 {
@@ -158,8 +198,8 @@
 }
 
 .restart_button_container {
-  margin-top: -1.5%;
-  padding-left: 50px;
+  width: 50%;
+  padding-top: 40%;
 }
 
 .restart_button {
@@ -168,6 +208,8 @@
   padding: 5px 20px 5px 20px;
   border-radius: 50px;
   font-size: 14px;
+  width: 25%;
+  margin-left: 9%;
 }
 
 .review_answers_button {
