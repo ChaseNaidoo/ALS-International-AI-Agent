@@ -25,6 +25,21 @@ const Chatbot = () => {
     return response.json();
   };
 
+  const handleFileSelect = (selectedFile) => {
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      setFile(selectedFile);
+      setMessages((prev) => [
+        ...prev,
+        { text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.", sender: "bot" }
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { text: "Please upload a valid PDF file.", sender: "bot" }
+      ]);
+    }
+  };
+
   const handleFileUpload = async () => {
     if (!file) return;
 
@@ -68,23 +83,13 @@ const Chatbot = () => {
     event.stopPropagation();
     
     const droppedFile = event.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === "application/pdf") {
-      setFile(droppedFile);
-      setMessages((prev) => [
-        ...prev,
-        { text: "PDF file dropped successfully! Click 'Upload PDF' to continue.", sender: "bot" }
-      ]);
-    } else {
-      setMessages((prev) => [
-        ...prev,
-        { text: "Please upload a valid PDF file.", sender: "bot" }
-      ]);
-    }
+    handleFileSelect(droppedFile);
   };
 
   const resetChat = () => {
     setMessages(initialMessages);
     localStorage.setItem("chatMessages", JSON.stringify(initialMessages));
+    setFile(null);
   };
 
   return (
@@ -92,7 +97,43 @@ const Chatbot = () => {
       <h1>ALS International Recruitment Assistant</h1>
       <div className="chat-box">
         <div className="messages">
-          {messages.map((msg, index) => (
+          {/* First message displayed separately */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="message bot-message"
+          >
+            {initialMessages[0].text}
+          </motion.div>
+
+          {/* File Upload Section */}
+          <motion.div
+            className="file-upload-container"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <p>Drag and drop a PDF here, or click below to browse for the file</p>
+
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => handleFileSelect(e.target.files[0])}
+              id="file-input"
+              style={{ display: "none" }}
+            />
+
+            <div className="browse_files_container">
+              <label htmlFor="file-input" className="browse_files_button">
+                Browse Files
+              </label>
+              {file && <p className="file-name">{file.name}</p>} {/* Show file name */}
+            </div>
+          </motion.div>
+
+          {/* Render the rest of the messages (excluding the first one) */}
+          {messages.slice(1).map((msg, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 10 }}
@@ -102,33 +143,9 @@ const Chatbot = () => {
               {msg.text}
             </motion.div>
           ))}
+
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
-
-        {/* File Upload Section */}
-        <motion.div
-          className="file-upload-container"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <p>Drag and drop a PDF here, or click below to browse for the file</p>
-          
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setFile(e.target.files[0])}
-            id="file-input"
-            style={{ display: "none" }}
-          />
-
-          <div className="browse_files_container">
-            <label htmlFor="file-input" className="browse_files_button">
-              Browse Files
-            </label>
-          </div>
-        </motion.div>
 
         {/* Upload Button */}
         {file && !isUploading && (
