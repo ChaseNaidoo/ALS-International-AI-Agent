@@ -23,7 +23,7 @@
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 50px 0px 11% 20px;
+  padding: 50px 0px 7% 20px;
 }
 
 /* Pseudo-elements for extending lines */
@@ -132,6 +132,33 @@
 
 .file-upload-container p {
   color: #3354ff;
+}
+
+.file-upload-container.drag-over {
+  border: 2px dashed #3354ff;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.file-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Thumbnail Styling */
+.file-preview img {
+  width: 100%; /* Adjust size */
+  height: 1%;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.file-preview img:hover {
+  transform: scale(1.15);
+  border-color: #007bff; /* Highlight on hover */
 }
 
 .input-container p {

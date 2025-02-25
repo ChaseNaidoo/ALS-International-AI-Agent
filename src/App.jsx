@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import * as pdfjsLib from "pdfjs-dist";
+import "pdfjs-dist/build/pdf.worker.entry"; // Required for proper PDF parsing
 import "./App.css";
 
 const Chatbot = () => {
@@ -10,6 +12,8 @@ const Chatbot = () => {
   const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem("chatMessages")) || initialMessages);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [pdfThumbnail, setPdfThumbnail] = useState(null); // Store the thumbnail URL
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -25,13 +29,36 @@ const Chatbot = () => {
     return response.json();
   };
 
-  const handleFileSelect = (selectedFile) => {
+  const handleFileSelect = async (selectedFile) => {
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile);
       setMessages((prev) => [
         ...prev,
         { text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.", sender: "bot", showUploadButton: true }
       ]);
+
+      // Read the file as an ArrayBuffer
+      const fileReader = new FileReader();
+      fileReader.onload = async () => {
+        const pdfData = new Uint8Array(fileReader.result);
+        const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+        const page = await pdf.getPage(1);
+
+        // Render the first page to a canvas
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        // Convert the canvas to an image URL
+        const thumbnailUrl = canvas.toDataURL("image/png");
+        setPdfThumbnail(thumbnailUrl);
+      };
+
+      fileReader.readAsArrayBuffer(selectedFile);
     } else {
       setMessages((prev) => [
         ...prev,
@@ -71,17 +98,21 @@ const Chatbot = () => {
 
     setIsUploading(false);
     setFile(null);
+    setPdfThumbnail(null);
   };
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    event.stopPropagation();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragOver(false);
   };
 
   const handleDrop = (event) => {
     event.preventDefault();
-    event.stopPropagation();
-    
+    setDragOver(false);
     const droppedFile = event.dataTransfer.files[0];
     handleFileSelect(droppedFile);
   };
@@ -90,6 +121,7 @@ const Chatbot = () => {
     setMessages(initialMessages);
     localStorage.setItem("chatMessages", JSON.stringify(initialMessages));
     setFile(null);
+    setPdfThumbnail(null);
   };
 
   return (
@@ -108,13 +140,32 @@ const Chatbot = () => {
 
           {/* File Upload Section */}
           <motion.div
-            className="file-upload-container"
+            className={`file-upload-container ${dragOver ? 'drag-over' : ''}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            aria-label="Drag and drop a PDF here, or click below to browse for the file"
           >
             <p>Drag and drop a PDF here, or click below to browse for the file</p>
+
+            {/* Display PDF Thumbnail between the text and the button */}
+            {pdfThumbnail && (
+              <div className="file-preview">
+                <img
+                  src={pdfThumbnail}
+                  alt="PDF Thumbnail"
+                  style={{
+                    maxWidth: "150px",
+                    maxHeight: "200px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    marginTop: "10px"
+                  }}
+                />
+              </div>
+            )}
 
             <input
               type="file"
