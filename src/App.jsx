@@ -30,7 +30,7 @@ const Chatbot = () => {
       setFile(selectedFile);
       setMessages((prev) => [
         ...prev,
-        { text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.", sender: "bot" }
+        { text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.", sender: "bot", showUploadButton: true }
       ]);
     } else {
       setMessages((prev) => [
@@ -132,7 +132,7 @@ const Chatbot = () => {
             </div>
           </motion.div>
 
-          {/* Render the rest of the messages (excluding the first one) */}
+          {/* Render the rest of the messages */}
           {messages.slice(1).map((msg, index) => (
             <motion.div
               key={index}
@@ -141,18 +141,18 @@ const Chatbot = () => {
               className={`message ${msg.sender === "bot" ? "bot-message" : "user-message"}`}
             >
               {msg.text}
+
+              {/* Conditionally render the "Upload PDF" button */}
+              {msg.showUploadButton && !isUploading && (
+                <button className="send-button" onClick={handleFileUpload} disabled={!file || isUploading}>
+                  {isUploading ? "Uploading..." : "Upload PDF"}
+                </button>
+              )}
             </motion.div>
           ))}
 
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
-
-        {/* Upload Button */}
-        {file && !isUploading && (
-          <button className="send-button" onClick={handleFileUpload} disabled={!file || isUploading}>
-            {isUploading ? "Uploading..." : "Upload PDF"}
-          </button>
-        )}
 
         {/* Reset Chat Button */}
         <div className="restart_button_container">

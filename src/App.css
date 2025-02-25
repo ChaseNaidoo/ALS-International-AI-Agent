@@ -81,6 +81,7 @@
   min-height: 80%;
   gap: 8px;
   padding-left: 50px;
+  z-index: 3;
 }
 
 /* Chat message bubbles */
@@ -119,7 +120,7 @@
 }
 
 .file-upload-container {
-  width: 39%;
+  width: 40%;
   padding: 10px 20px 20px 20px;
   border: none;
   border-radius: 30px 30px 30px 10px;
@@ -153,10 +154,11 @@
   color: white;
   border: none;
   padding: 10px 50px;
+  margin-top: 5%;
   margin-right: 50px;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 14px; 
 }
 
 .send-button:hover {
@@ -164,7 +166,7 @@
 }
 
 .file-name {
-  margin-left: 65%;
+  margin-left: 63%;
   margin-top: -7.5%;
   margin-bottom: 1%;
   font-size: 14px;
@@ -218,6 +220,7 @@
   font-size: 14px;
   width: 25%;
   margin-left: 9%;
+  cursor: pointer;
 }
 
 .review_answers_button {
