@@ -391,6 +391,39 @@ border-radius: 50px;
 font-size: 12px;
 margin-left: 10px;
 }
+
+.file-name {
+  margin-left: 63%;
+  margin-top: -7.5%;
+  margin-bottom: 1%;
+  font-size: 12px;
+  color: #555;
+  word-break: break-all;
+}
+
+.uploadPDF_message {
+  background-color: white;
+  color: #3354ff;
+  align-self: flex-start;
+  border-radius: 30px 30px 30px 10px;
+  padding: 10px 20px 20px 20px;
+  width: 85%;
+}
+
+.browse_files_container {
+  margin-top: 10%;
+}
+
+/* Browse Files */
+.browse_files_button {
+  background-color: #3354ff;
+  color: white;
+  border: none;
+  padding: 10px 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+}
 }
 
 /* Media Query: Adjustments for Mobile (max-width: 480px) */
@@ -409,7 +442,7 @@ max-height: 86%;
 max-width: 98%;
 margin-top: 20%;
 margin-right: 0.1%;
-padding: 20px 0px 30px 0px;
+padding: 20px 0px 20px 0px;
 }
 
 /* Messages container */
@@ -476,17 +509,18 @@ background-color: #2563eb;
 .chat-container h1 {
 font-size: 20px;
 margin-top: 2%;
-padding-right: 50%;
+padding-right: 20%;
 }
 
 .restart_button_container {
-margin-top: -1%;
-margin-left: -7%;
+margin-top: -10%;
+margin-left: -1%;
+width: 120%;
 }
 
 .restart_button {
 padding: 5px 20px 5px 20px;
-border-radius: 50px;
+border-radius: 30px;
 font-size: 10px;
 }
 
@@ -495,5 +529,73 @@ padding: 5px 20px 5px 20px;
 border-radius: 50px;
 font-size: 10px;
 margin-left: 10px;
+}
+
+.file-name {
+  margin-left: 5%;
+  margin-top: 10%;
+  font-size: 10px;
+  color: #555;
+  word-break: break-all;
+}
+
+.uploadPDF_message {
+  background-color: white;
+  color: #3354ff;
+  align-self: flex-start;
+  border-radius: 30px 30px 30px 10px;
+  padding: 10px 20px 20px 20px;
+  width: 85%;
+  font-size: 12px;
+}
+
+.browse_files_container {
+  margin-top: 10%;
+}
+
+/* Browse Files */
+.browse_files_button {
+  background-color: #3354ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.file-upload-container {
+  width: 60%;
+  margin-left: -7%;
+}
+
+.file-upload-container p {
+  font-size: 10px;
+}
+
+.file-upload-container.drag-over {
+  border: 2px dashed #3354ff;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.file-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+}
+
+/* Thumbnail Styling */
+.file-preview img {
+  width: 100%; /* Adjust size */
+  height: 1%;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.input-container p {
+  padding-bottom: 15%;
 }
 }
