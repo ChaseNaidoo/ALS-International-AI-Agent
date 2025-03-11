@@ -77,7 +77,7 @@ const Login = ({ onLogin }) => {
 const Chatbot = ({ userEmail, onLogout }) => {
   const initialMessages = [
     {
-      text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.",
+      text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) or type a message to get started.",
       sender: "bot",
     },
   ];
@@ -87,7 +87,8 @@ const Chatbot = ({ userEmail, onLogout }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [pdfThumbnail, setPdfThumbnail] = useState(null);
-  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false); // New flag
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
+  const [userInput, setUserInput] = useState("");
   const messagesEndRef = useRef(null);
 
   // Fetch chat history on mount
@@ -112,15 +113,15 @@ const Chatbot = ({ userEmail, onLogout }) => {
         console.error("Failed to fetch chat history:", error);
         setMessages(initialMessages);
       } finally {
-        setIsHistoryLoaded(true); // Mark history as loaded
+        setIsHistoryLoaded(true);
       }
     };
     fetchChatHistory();
   }, [userEmail]);
 
-  // Save chat history when messages change, but only after history is loaded
+  // Save chat history when messages change
   useEffect(() => {
-    if (!isHistoryLoaded) return; // Skip saving until history is fetched
+    if (!isHistoryLoaded) return;
 
     const saveChatHistory = async () => {
       try {
@@ -146,6 +147,39 @@ const Chatbot = ({ userEmail, onLogout }) => {
       { method: "POST", body: formData }
     );
     return response.json();
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!userInput.trim()) return;
+
+    const userMessage = { text: userInput, sender: "user" };
+    setMessages((prev) => [...prev, userMessage]);
+    setUserInput("");
+
+    const formData = new FormData();
+    formData.append("message", userInput);
+    formData.append("email", userEmail);
+
+    try {
+      const response = await fetch(
+        "https://charliebessell.app.n8n.cloud/webhook-test/2bcbf8d5-b648-4ef2-9fd6-b7526f0bac63",
+        { method: "POST", body: formData }
+      );
+      const data = await response.json();
+
+      if (data.response) {
+        setMessages((prev) => [
+          ...prev,
+          { text: data.response, sender: "bot" },
+        ]);
+      }
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error processing your message. Please try again.", sender: "bot" },
+      ]);
+    }
   };
 
   const handleFileSelect = async (selectedFile) => {
@@ -249,7 +283,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
 
   return (
     <div className="chat-container">
-      <img src="./public/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo" />
+      <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo" />
       <h1>Recruitment Assistant</h1>
       <div className="chat-box">
         <div className="messages">
@@ -309,6 +343,18 @@ const Chatbot = ({ userEmail, onLogout }) => {
           ))}
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
+        <form onSubmit={handleSendMessage} className="input-container">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Type your message here..."
+            className="message-input"
+          />
+          <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
+            Send
+          </button>
+        </form>
         <div className="button-container">
           <button className="restart_button" onClick={resetChat}>
             Reset Chat
@@ -318,7 +364,8 @@ const Chatbot = ({ userEmail, onLogout }) => {
           </button>
         </div>
       </div>
-      <p className="powered-by">Powered by InLogic</p>
+      <p className="powered-by">Powered by</p>
+      <img src="/inlogic_logo_white.png" alt="inlogic_logo" className="inlogic_logo"/>
     </div>
   );
 };
