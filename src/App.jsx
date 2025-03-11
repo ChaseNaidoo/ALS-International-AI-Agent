@@ -349,7 +349,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="Type your message here..."
-            className="message-input"
+            className="input-box"
           />
           <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
             Send
