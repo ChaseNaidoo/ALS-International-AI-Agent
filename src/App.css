@@ -8,11 +8,12 @@
   justify-content: right;
   overflow: hidden;
   padding-right: 1.5%;
+  position: relative;
 }
 
 /* Chat box container */
 .chat-box {
-  position: relative; /* Needed for absolute positioning of the lines */
+  position: relative;
   width: 100%;
   height: 100vh;
   max-height: 93%;
@@ -33,14 +34,14 @@
 .chat-box div::after {
   content: "";
   position: absolute;
-  background: rgba(255, 255, 255, 0.5); /* Light lines */
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Top & Bottom solid lines */
 .chat-box::before,
 .chat-box::after {
   right: -5%;
-  width: 300%; /* Extends the full viewport width */
+  width: 300%;
   height: 2px;
 }
 
@@ -56,7 +57,7 @@
 .chat-box div::before,
 .chat-box div::after {
   top: -20%;
-  height: 500%; /* Extends the full viewport height */
+  height: 500%;
   width: 2px;
   border-left: 2px dashed rgba(255, 255, 255, 0);
 }
@@ -148,7 +149,7 @@
 
 /* Thumbnail Styling */
 .file-preview img {
-  width: 100%; /* Adjust size */
+  width: 100%;
   height: 1%;
   border-radius: 8px;
   border: 2px solid #ccc;
@@ -158,7 +159,7 @@
 
 .file-preview img:hover {
   transform: scale(1.15);
-  border-color: #007bff; /* Highlight on hover */
+  border-color: #007bff;
 }
 
 .input-container p {
@@ -185,7 +186,7 @@
   margin-right: 50px;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 14px; 
+  font-size: 14px;
 }
 
 .send-button:hover {
@@ -234,26 +235,47 @@
   padding-right: 75%;
 }
 
-.restart_button_container {
-  width: 50%;
+/* Button container for Restart and Logout */
+.button-container {
+  width: 100%;
   padding-top: 70%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
 
 .restart_button {
   background-color: #3354ff;
   color: white;
-  padding: 5px 20px 5px 20px;
+  padding: 5px 20px;
   border-radius: 50px;
   font-size: 14px;
   width: 25%;
   margin-left: 9%;
   cursor: pointer;
+  border: none;
+}
+
+.logout_button {
+  background-color: #ff3333; /* Red to distinguish from restart */
+  color: white;
+  padding: 5px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  width: 25%;
+  cursor: pointer;
+  border: none;
+}
+
+.logout_button:hover {
+  background-color: #cc0000;
 }
 
 .review_answers_button {
   background-color: #3354ff;
   color: white;
-  padding: 5px 20px 5px 20px;
+  padding: 5px 20px;
   border-radius: 50px;
   font-size: 14px;
   margin-left: 10px;
@@ -287,330 +309,305 @@
   margin-bottom: 1rem;
 }
 
-/* Media Query: Adjustments for Laptop Screens */
-@media screen and (max-width: 1440px) {
-/* Main container */
-.chat-container {
-height: 100vh;
-width: 100vw;
-padding-right: 1.5%;
-}
-
-/* Chat box container */
-.chat-box {
-height: 100vh;
-max-height: 95%;
-max-width: 70%;
-margin-top: 2%;
-margin-right: 0.1%;
-padding: 20px 0px 5% 0px;
-}
-
-/* Messages container */
-.messages {
-display: flex;
-flex-direction: column;
-margin-bottom: -50%;
-min-height: 80%;
-gap: 8px;
-}
-
-/* Chat message bubbles */
-.message {
-padding: 10px;
-border-radius: 8px;
-max-width: 45%;
-margin-top: 1%;
-margin-left: -1%;
-}
-
-/* Bot messages */
-.bot-message {
-border-radius: 30px 30px 30px 10px;
-padding: 10px 20px 10px 20px;
-font-size: 12px;
-}
-
-/* User messages */
-.user-message {
-margin-right: 5%;
-border-radius: 30px 30px 10px 30px;
-padding: 10px 20px 10px 20px;
-font-size: 12px;
-}
-
-/* Input area */
-.input-container {
-margin-top: 60%;
-margin-bottom: 3%;
-margin-left: -1%;
-display: flex;
-}
-
-/* Input field */
-.input-box {
-padding: 10px 5px 10px 20px;
-margin-right: 10px;
-border-radius: 50px;
-font-size: 12px;
-}
-
-/* Send button */
-.send-button {
-padding: 10px 30px;
-margin-right: 5%;
-border-radius: 50px;
-font-size: 12px;
-}
-
-.send-button:hover {
-background-color: #2563eb;
-}
-
-.chat-container h1 {
-font-size: 38px;
-left: 20px;
-margin-top: 5%;
-padding-right: 70%;
-}
-
-.restart_button_container {
-margin-top: -1%;
-margin-left: -1%;
-width: 80%;
-}
-
-.restart_button {
-padding: 5px 20px 5px 20px;
-border-radius: 50px;
-font-size: 12px;
-}
-
-.review_answers_button {
-padding: 5px 20px 5px 20px;
-border-radius: 50px;
-font-size: 12px;
-margin-left: 10px;
-}
-
-.file-name {
-  margin-left: 58%;
-  margin-top: -9%;
-  margin-bottom: 1%;
-  font-size: 10px;
-  color: #555;
-  word-break: break-all;
-}
-
-.uploadPDF_message {
-  background-color: white;
-  color: #3354ff;
-  align-self: flex-start;
-  border-radius: 30px 30px 30px 10px;
-  padding: 10px 20px 20px 20px;
-  width: 85%;
-}
-
-.browse_files_container {
-  margin-top: 10%;
-}
-
-/* Browse Files */
-.browse_files_button {
-  background-color: #3354ff;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.file-upload-container {
-  width: 45%;
-  margin-left: -1%;
-}
-
-.file-upload-container p {
-  font-size: 12px;
-}
-
-.file-upload-container.drag-over {
-  border: 2px dashed #3354ff;
-  background-color: rgba(76, 175, 80, 0.1);
-}
-}
-
-/* Media Query: Adjustments for Mobile (max-width: 480px) */
-@media screen and (max-width: 600px) {
-/* Main container */
-.chat-container {
-height: 100vh;
-width: 100vw;
-padding-right: 1.5%;
-}
-
-/* Chat box container */
-.chat-box {
-height: 100vh;
-max-height: 86%;
-max-width: 98%;
-margin-top: 20%;
-margin-right: 0.1%;
-padding: 20px 0px 20px 0px;
-}
-
-/* Messages container */
-.messages {
-display: flex;
-flex-direction: column;
-margin-bottom: -50%;
-min-height: 80%;
-gap: 8px;
-}
-
-/* Chat message bubbles */
-.message {
-padding: 10px;
-border-radius: 8px;
-max-width: 60%;
-margin-top: 1%;
-margin-left: -7%;
-}
-
-/* Bot messages */
-.bot-message {
-border-radius: 30px 30px 30px 10px;
-padding: 10px 20px 10px 20px;
-font-size: 10px;
-}
-
-/* User messages */
-.user-message {
-margin-right: 5%;
-border-radius: 30px 30px 10px 30px;
-padding: 10px 20px 10px 20px;
-font-size: 10px;
-}
-
-/* Input area */
-.input-container {
-margin-top: 60%;
-margin-bottom: 3%;
-margin-left: -7%;
-display: flex;
-}
-
-/* Input field */
-.input-box {
-padding: 10px 5px 10px 20px;
-margin-right: 10px;
-border-radius: 50px;
-font-size: 10px;
-}
-
-/* Send button */
-.send-button {
-padding: 10px 30px;
-margin-right: 20px;
-border-radius: 50px;
-font-size: 10px;
-}
-
-.send-button:hover {
-background-color: #2563eb;
-}
-
-.chat-container h1 {
-font-size: 20px;
-margin-top: 2%;
-padding-right: 20%;
-}
-
-.restart_button_container {
-margin-top: -10%;
-margin-left: -1%;
-width: 120%;
-}
-
-.restart_button {
-padding: 5px 20px 5px 20px;
-border-radius: 30px;
-font-size: 10px;
-}
-
-.review_answers_button {
-padding: 5px 20px 5px 20px;
-border-radius: 50px;
-font-size: 10px;
-margin-left: 10px;
-}
-
-.file-name {
-  margin-left: 5%;
-  margin-top: 10%;
-  font-size: 10px;
-  color: #555;
-  word-break: break-all;
-}
-
-.uploadPDF_message {
-  background-color: white;
-  color: #3354ff;
-  align-self: flex-start;
-  border-radius: 30px 30px 30px 10px;
-  padding: 10px 20px 20px 20px;
-  width: 85%;
-  font-size: 12px;
-}
-
-.browse_files_container {
-  margin-top: 10%;
-}
-
-/* Browse Files */
-.browse_files_button {
-  background-color: #3354ff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.file-upload-container {
-  width: 60%;
-  margin-left: -7%;
-}
-
-.file-upload-container p {
-  font-size: 10px;
-}
-
-.file-upload-container.drag-over {
-  border: 2px dashed #3354ff;
-  background-color: rgba(76, 175, 80, 0.1);
-}
-
-.file-preview {
+/* Login Container */
+.login-container {
+  background-image: url(./assets/inlogic_backgroud.svg);
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5px;
+  overflow: hidden;
 }
 
-/* Thumbnail Styling */
-.file-preview img {
-  width: 100%; /* Adjust size */
-  height: 1%;
-  border-radius: 8px;
-  border: 2px solid #ccc;
+/* Login Box */
+.login-box {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(18px);
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
 }
 
-.input-container p {
-  padding-bottom: 15%;
+.login-box h1 {
+  font-size: 36px;
+  color: #3354ff;
+  margin-bottom: 10px;
 }
+
+.subheading {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Input Fields */
+.login-input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 50px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.login-input:focus {
+  border-color: #3354ff;
+}
+
+/* Error Message */
+.error-message {
+  color: #ff3333;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* Login Button */
+.login-button {
+  background-color: #3354ff;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.login-button:hover {
+  background-color: #2563eb;
+}
+
+.login-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Powered by InLogic */
+.powered-by {
+  font-size: 12px;
+  color: #555;
+  margin-top: 20px;
+}
+
+.chat-container .powered-by {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+/* Media Query: Adjustments for Laptop Screens */
+@media screen and (max-width: 1440px) {
+  .chat-container {
+    height: 100vh;
+    width: 100vw;
+    padding-right: 1.5%;
+  }
+
+  .chat-box {
+    height: 100vh;
+    max-height: 95%;
+    max-width: 70%;
+    margin-top: 2%;
+    margin-right: 0.1%;
+    padding: 20px 0px 5% 0px;
+  }
+
+  .messages {
+    margin-bottom: -50%;
+    min-height: 80%;
+    gap: 8px;
+  }
+
+  .message {
+    max-width: 45%;
+    margin-top: 1%;
+    margin-left: -1%;
+  }
+
+  .bot-message {
+    font-size: 12px;
+  }
+
+  .user-message {
+    margin-right: 5%;
+    font-size: 12px;
+  }
+
+  .input-container {
+    margin-top: 60%;
+    margin-bottom: 3%;
+    margin-left: -1%;
+  }
+
+  .input-box {
+    padding: 10px 5px 10px 20px;
+    font-size: 12px;
+  }
+
+  .send-button {
+    padding: 10px 30px;
+    margin-right: 5%;
+    font-size: 12px;
+  }
+
+  .chat-container h1 {
+    font-size: 38px;
+    margin-top: 5%;
+    padding-right: 70%;
+  }
+
+  .button-container {
+    margin-top: -1%;
+    margin-left: -1%;
+    width: 80%;
+  }
+
+  .restart_button,
+  .logout_button {
+    font-size: 12px;
+  }
+
+  .file-name {
+    margin-left: 58%;
+    margin-top: -9%;
+    font-size: 10px;
+  }
+
+  .browse_files_button {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+
+  .file-upload-container {
+    width: 45%;
+    margin-left: -1%;
+  }
+
+  .file-upload-container p {
+    font-size: 12px;
+  }
+}
+
+/* Media Query: Adjustments for Mobile (max-width: 600px) */
+@media screen and (max-width: 600px) {
+  .chat-container {
+    height: 100vh;
+    width: 100vw;
+    padding-right: 1.5%;
+  }
+
+  .chat-box {
+    max-height: 86%;
+    max-width: 98%;
+    margin-top: 20%;
+    padding: 20px 0px 20px 0px;
+  }
+
+  .messages {
+    margin-bottom: -50%;
+    min-height: 80%;
+  }
+
+  .message {
+    max-width: 60%;
+    margin-left: -7%;
+  }
+
+  .bot-message,
+  .user-message {
+    font-size: 10px;
+  }
+
+  .input-container {
+    margin-left: -7%;
+  }
+
+  .input-box {
+    font-size: 10px;
+  }
+
+  .send-button {
+    padding: 10px 30px;
+    margin-right: 20px;
+    font-size: 10px;
+  }
+
+  .chat-container h1 {
+    font-size: 20px;
+    margin-top: 2%;
+    padding-right: 20%;
+  }
+
+  .button-container {
+    margin-top: -10%;
+    margin-left: -1%;
+    width: 120%;
+    flex-direction: column; /* Stack buttons on mobile */
+    gap: 10px;
+  }
+
+  .restart_button,
+  .logout_button {
+    font-size: 10px;
+    width: 50%; /* Adjust width for mobile */
+  }
+
+  .file-name {
+    margin-left: 5%;
+    margin-top: 10%;
+    font-size: 10px;
+  }
+
+  .uploadPDF_message {
+    font-size: 12px;
+  }
+
+  .browse_files_button {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .file-upload-container {
+    width: 60%;
+    margin-left: -7%;
+  }
+
+  .file-upload-container p {
+    font-size: 10px;
+  }
+
+  .login-box {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .login-box h1 {
+    font-size: 24px;
+  }
+
+  .subheading {
+    font-size: 14px;
+  }
+
+  .login-input {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
+  .login-button {
+    padding: 10px 30px;
+    font-size: 14px;
+  }
+
+  .powered-by {
+    font-size: 10px;
+  }
 }

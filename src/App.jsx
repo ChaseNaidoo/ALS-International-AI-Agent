@@ -1,31 +1,150 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as pdfjsLib from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry"; // Required for proper PDF parsing
+import "pdfjs-dist/build/pdf.worker.entry";
 import "./App.css";
 
-const Chatbot = () => {
+const Login = ({ onLogin }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try {
+      const response = await fetch(
+        "https://charliebessell.app.n8n.cloud/webhook/5ff43181-90e7-4b8a-b562-4b6d928d1798",
+        { method: "POST", body: formData }
+      );
+      const data = await response.json();
+
+      if (data.response === "yes") {
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("loginTime", Date.now());
+        sessionStorage.setItem("userEmail", email);
+        onLogin(email);
+      } else {
+        setError("Invalid email or password.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-box">
+        <h1>ALS International</h1>
+        <p className="subheading">Staff Login</p>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="login-input"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="login-input"
+          />
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <p className="powered-by">Powered by InLogic</p>
+      </div>
+    </div>
+  );
+};
+
+const Chatbot = ({ userEmail, onLogout }) => {
   const initialMessages = [
-    { text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.", sender: "bot" }
+    {
+      text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) to get started.",
+      sender: "bot",
+    },
   ];
 
-  const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem("chatMessages")) || initialMessages);
+  const [messages, setMessages] = useState(initialMessages);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
-  const [pdfThumbnail, setPdfThumbnail] = useState(null); // Store the thumbnail URL
+  const [pdfThumbnail, setPdfThumbnail] = useState(null);
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false); // New flag
   const messagesEndRef = useRef(null);
 
+  // Fetch chat history on mount
   useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
+    const fetchChatHistory = async () => {
+      try {
+        const response = await fetch(
+          "https://charliebessell.app.n8n.cloud/webhook/e3f02125-19bd-4c15-94bb-f18752e3c25a",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail }),
+          }
+        );
+        const data = await response.json();
+        if (data.messages && Array.isArray(data.messages)) {
+          setMessages(data.messages);
+        } else {
+          setMessages(initialMessages);
+        }
+      } catch (error) {
+        console.error("Failed to fetch chat history:", error);
+        setMessages(initialMessages);
+      } finally {
+        setIsHistoryLoaded(true); // Mark history as loaded
+      }
+    };
+    fetchChatHistory();
+  }, [userEmail]);
+
+  // Save chat history when messages change, but only after history is loaded
+  useEffect(() => {
+    if (!isHistoryLoaded) return; // Skip saving until history is fetched
+
+    const saveChatHistory = async () => {
+      try {
+        await fetch(
+          "https://charliebessell.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail, messages }),
+          }
+        );
+      } catch (error) {
+        console.error("Failed to save chat history:", error);
+      }
+    };
+    saveChatHistory();
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages]);
+  }, [messages, userEmail, isHistoryLoaded]);
 
   const sendToN8N = async (formData) => {
-    const response = await fetch("https://charliebessell.app.n8n.cloud/webhook-test/2bcbf8d5-b648-4ef2-9fd6-b7526f0bac63", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://charliebessell.app.n8n.cloud/webhook-test/2bcbf8d5-b648-4ef2-9fd6-b7526f0bac63",
+      { method: "POST", body: formData }
+    );
     return response.json();
   };
 
@@ -34,17 +153,18 @@ const Chatbot = () => {
       setFile(selectedFile);
       setMessages((prev) => [
         ...prev,
-        { text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.", sender: "bot", showUploadButton: true }
+        {
+          text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.",
+          sender: "bot",
+          showUploadButton: true,
+        },
       ]);
 
-      // Read the file as an ArrayBuffer
       const fileReader = new FileReader();
       fileReader.onload = async () => {
         const pdfData = new Uint8Array(fileReader.result);
         const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
         const page = await pdf.getPage(1);
-
-        // Render the first page to a canvas
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
@@ -52,17 +172,14 @@ const Chatbot = () => {
         canvas.height = viewport.height;
 
         await page.render({ canvasContext: context, viewport }).promise;
-
-        // Convert the canvas to an image URL
         const thumbnailUrl = canvas.toDataURL("image/png");
         setPdfThumbnail(thumbnailUrl);
       };
-
       fileReader.readAsArrayBuffer(selectedFile);
     } else {
       setMessages((prev) => [
         ...prev,
-        { text: "Please upload a valid PDF file.", sender: "bot" }
+        { text: "Please upload a valid PDF file.", sender: "bot" },
       ]);
     }
   };
@@ -78,24 +195,24 @@ const Chatbot = () => {
 
     try {
       const data = await sendToN8N(formData);
-
       if (data.message) {
         setMessages((prev) => [
           ...prev,
-          { text: "File uploaded successfully! Generating InMail draft...", sender: "bot" }
+          { text: "File uploaded successfully! Generating InMail draft...", sender: "bot" },
         ]);
       }
-
       if (data.draft) {
         setMessages((prev) => [
           ...prev,
-          { text: `Here is your LinkedIn InMail draft:\n\n${data.draft}`, sender: "bot" }
+          { text: `Here is your LinkedIn InMail draft:\n\n${data.draft}`, sender: "bot" },
         ]);
       }
     } catch (error) {
-      setMessages((prev) => [...prev, { text: "Error uploading file. Please try again.", sender: "bot" }]);
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error uploading file. Please try again.", sender: "bot" },
+      ]);
     }
-
     setIsUploading(false);
     setFile(null);
     setPdfThumbnail(null);
@@ -119,9 +236,15 @@ const Chatbot = () => {
 
   const resetChat = () => {
     setMessages(initialMessages);
-    localStorage.setItem("chatMessages", JSON.stringify(initialMessages));
     setFile(null);
     setPdfThumbnail(null);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("loginTime");
+    sessionStorage.removeItem("userEmail");
+    onLogout();
   };
 
   return (
@@ -129,7 +252,6 @@ const Chatbot = () => {
       <h1>ALS International Recruitment Assistant</h1>
       <div className="chat-box">
         <div className="messages">
-          {/* First message displayed separately */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -137,36 +259,20 @@ const Chatbot = () => {
           >
             {initialMessages[0].text}
           </motion.div>
-
-          {/* File Upload Section */}
           <motion.div
-            className={`file-upload-container ${dragOver ? 'drag-over' : ''}`}
+            className={`file-upload-container ${dragOver ? "drag-over" : ""}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            aria-label="Drag and drop a PDF here, or click below to browse for the file"
           >
             <p>Drag and drop a PDF here, or click below to browse for the file</p>
-
-            {/* Display PDF Thumbnail between the text and the button */}
             {pdfThumbnail && (
               <div className="file-preview">
-                <img
-                  src={pdfThumbnail}
-                  alt="PDF Thumbnail"
-                  style={{
-                    maxWidth: "150px",
-                    maxHeight: "200px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    marginTop: "10px"
-                  }}
-                />
+                <img src={pdfThumbnail} alt="PDF Thumbnail" />
               </div>
             )}
-
             <input
               type="file"
               accept="application/pdf"
@@ -174,16 +280,13 @@ const Chatbot = () => {
               id="file-input"
               style={{ display: "none" }}
             />
-
             <div className="browse_files_container">
               <label htmlFor="file-input" className="browse_files_button">
                 Browse Files
               </label>
-              {file && <p className="file-name">{file.name}</p>} {/* Show file name */}
+              {file && <p className="file-name">{file.name}</p>}
             </div>
           </motion.div>
-
-          {/* Render the rest of the messages */}
           {messages.slice(1).map((msg, index) => (
             <motion.div
               key={index}
@@ -192,28 +295,81 @@ const Chatbot = () => {
               className={`message ${msg.sender === "bot" ? "bot-message" : "user-message"}`}
             >
               {msg.text}
-
-              {/* Conditionally render the "Upload PDF" button */}
               {msg.showUploadButton && !isUploading && (
-                <button className="send-button" onClick={handleFileUpload} disabled={!file || isUploading}>
+                <button
+                  className="send-button"
+                  onClick={handleFileUpload}
+                  disabled={!file || isUploading}
+                >
                   {isUploading ? "Uploading..." : "Upload PDF"}
                 </button>
               )}
             </motion.div>
           ))}
-
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
-
-        {/* Reset Chat Button */}
-        <div className="restart_button_container">
+        <div className="button-container">
           <button className="restart_button" onClick={resetChat}>
             Reset Chat
           </button>
+          <button className="logout_button" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
+      <p className="powered-by">Powered by InLogic</p>
     </div>
   );
 };
 
-export default Chatbot;
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    sessionStorage.getItem("isLoggedIn") === "true"
+  );
+  const [userEmail, setUserEmail] = useState(sessionStorage.getItem("userEmail"));
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const timeout = 30 * 60 * 1000; // 30 minutes
+    let timer;
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("loginTime");
+        sessionStorage.removeItem("userEmail");
+        setIsLoggedIn(false);
+        setUserEmail(null);
+      }, timeout);
+    };
+
+    const events = ["mousemove", "keydown", "scroll", "click"];
+    events.forEach((event) => window.addEventListener(event, resetTimer));
+    resetTimer();
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
+  }, [isLoggedIn]);
+
+  const handleLogin = (email) => {
+    setIsLoggedIn(true);
+    setUserEmail(email);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserEmail(null);
+  };
+
+  return isLoggedIn ? (
+    <Chatbot userEmail={userEmail} onLogout={handleLogout} />
+  ) : (
+    <Login onLogin={handleLogin} />
+  );
+};
+
+export default App;
