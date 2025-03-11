@@ -1,72 +1,35 @@
 /* Main container */
 .chat-container {
-  background-image: url(./assets/inlogic_backgroud.svg);
+  background-image: url(./assets/shanghai_background.jpg);
+  background-size: cover;  /* Ensures the image covers the entire container */
+  background-position: -20% center;  /* Moves the image to the left */
+  background-repeat: no-repeat;  /* Prevents tiling */
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: right;
+  justify-content: flex-end;
   overflow: hidden;
   padding-right: 1.5%;
 }
 
 /* Chat box container */
 .chat-box {
-  position: relative; /* Needed for absolute positioning of the lines */
   width: 100%;
   height: 100vh;
   max-height: 93%;
-  max-width: 65%;
-  margin-top: 2%;
+  max-width: 60%;
+  margin-bottom: 5%;
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   padding: 50px 0px 7% 20px;
-}
-
-/* Pseudo-elements for extending lines */
-.chat-box::before,
-.chat-box::after,
-.chat-box div::before,
-.chat-box div::after {
-  content: "";
-  position: absolute;
-  background: rgba(255, 255, 255, 0.5); /* Light lines */
-}
-
-/* Top & Bottom solid lines */
-.chat-box::before,
-.chat-box::after {
-  right: -5%;
-  width: 300%; /* Extends the full viewport width */
-  height: 2px;
-}
-
-.chat-box::before {
-  top: 0;
-}
-
-.chat-box::after {
-  bottom: 0;
-}
-
-/* Left & Right dashed lines */
-.chat-box div::before,
-.chat-box div::after {
-  top: -20%;
-  height: 500%; /* Extends the full viewport height */
-  width: 2px;
-  border-left: 2px dashed rgba(255, 255, 255, 0);
-}
-
-.chat-box div::before {
-  left: 0;
-}
-
-.chat-box div::after {
-  right: 0;
+  border-width: 2px;
+  border-color: white;
+  gap: 10px
 }
 
 /* Messages container */
@@ -80,7 +43,7 @@
   margin-bottom: -55%;
   min-height: 80%;
   gap: 8px;
-  padding-left: 50px;
+  padding-left: 2%;
   z-index: 3;
 }
 
@@ -94,17 +57,17 @@
 
 /* Bot messages */
 .bot-message {
-  background-color: white;
-  color: #3354ff;
+  background-color: #00A2B2;
+  color: white;
   align-self: flex-start;
-  border-radius: 30px 30px 30px 10px;
+  border-radius: 10px 10px 10px 0px;
   padding: 10px 20px 10px 20px;
 }
 
 /* User messages */
 .user-message {
-  background-color: #3354ff;
-  color: white;
+  background-color: white;
+  color: #00A2B2;
   align-self: flex-end;
   margin-right: 50px;
   border-radius: 30px 30px 10px 30px;
@@ -123,15 +86,15 @@
   width: 40%;
   padding: 10px 20px 20px 20px;
   border: none;
-  border-radius: 30px 30px 30px 10px;
+  border-radius: 10px 10px 10px 0px;
   text-align: left;
   cursor: pointer;
-  background-color: white;
+  background-color: #00A2B2;
   z-index: 2;
 }
 
 .file-upload-container p {
-  color: #3354ff;
+  color: white;
 }
 
 .file-upload-container.drag-over {
@@ -177,13 +140,12 @@
 
 /* Send button */
 .send-button {
-  background-color: #3354ff;
+  background-color: #00A2B2;
   color: white;
   border: none;
   padding: 10px 50px;
   margin-top: 5%;
   margin-right: 50px;
-  border-radius: 50px;
   cursor: pointer;
   font-size: 14px; 
 }
@@ -216,22 +178,35 @@
 
 /* Browse Files */
 .browse_files_button {
-  background-color: #3354ff;
+  background-color: #00A2B2;
   color: white;
-  border: none;
-  padding: 10px 50px;
-  border-radius: 50px;
+  border-width: 2px;
+  border-color: white;
+  padding: 8px 30px;
   cursor: pointer;
   font-size: 14px;
+  transition: 0.3s;
+}
+
+.browse_files_button:hover {
+  background-color: #ffffff60;
+  color: white;
 }
 
 .chat-container h1 {
-  font-size: 50px;
+  font-size: 40px;
   color: white;
   position: absolute;
-  left: 20px;
-  margin-top: 3.2%;
-  padding-right: 75%;
+  left: 1.5%;
+  margin-bottom: 31.5%;
+  padding-right: 65%;
+}
+
+.chat-logo {
+  position: relative;
+  left: -62%;  /* Moves it to the left */
+  top: 14.5%;    /* Moves it lower */
+  width: 550px; /* Adjust size as needed */
 }
 
 .restart_button_container {
@@ -240,14 +215,20 @@
 }
 
 .restart_button {
-  background-color: #3354ff;
+  background-color: transparent;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adds a soft black shadow */
   color: white;
-  padding: 5px 20px 5px 20px;
-  border-radius: 50px;
+  padding: 5px 20px;
   font-size: 14px;
   width: 25%;
-  margin-left: 9%;
+  margin-left: 2%;
   cursor: pointer;
+  transition: 0.3s; /* Smooth transition for hover effect */
+}
+
+.restart_button:hover {
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Increases shadow on hover */
+  background-color: #ffffff20;
 }
 
 .review_answers_button {

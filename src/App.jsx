@@ -126,7 +126,8 @@ const Chatbot = () => {
 
   return (
     <div className="chat-container">
-      <h1>ALS International Recruitment Assistant</h1>
+      <img src="./public/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo" />
+      <h1>Recruitment Assistant</h1>
       <div className="chat-box">
         <div className="messages">
           {/* First message displayed separately */}
