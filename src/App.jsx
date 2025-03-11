@@ -44,7 +44,7 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h1>ALS International</h1>
+      <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo-login" />
         <p className="subheading">Staff Login</p>
         <form onSubmit={handleLogin}>
           <input

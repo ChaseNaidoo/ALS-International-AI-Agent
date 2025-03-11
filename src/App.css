@@ -329,36 +329,40 @@
 
 /* Login Container */
 .login-container {
-  background-image: url(./assets/inlogic_backgroud.svg);
+  background-image: url(./assets/london_background.jpg);
+  background-size: cover;  /* Ensures the image covers the entire container */
+  background-position: -20% center;  /* Moves the image to the left */
+  background-repeat: no-repeat;  /* Prevents tiling */
   height: 100vh;
+  width: 100vw;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;      /* Centers vertically */
   overflow: hidden;
+  position: relative;
 }
 
 /* Login Box */
 .login-box {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
   padding: 40px;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 400px;
+  max-width: 500px;  /* Keeps the box from stretching too wide */
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+  border-width: 3px;
+  border-color: white;
 }
 
-.login-box h1 {
-  font-size: 36px;
-  color: #3354ff;
-  margin-bottom: 10px;
+.chat-logo-login {
+  padding-bottom: 50px;
 }
 
 .subheading {
   font-size: 18px;
-  color: #555;
+  color: #ffffff;
   margin-bottom: 20px;
+  margin-top: -30px;
 }
 
 /* Input Fields */
@@ -366,15 +370,16 @@
   width: 100%;
   padding: 12px 20px;
   margin: 10px 0;
-  border: 2px solid #ccc;
-  border-radius: 50px;
+  border: 2px solid #ffffff80;
+  background-color: #ffffff60;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.3s;
+  transition: 0.3s;
 }
 
 .login-input:focus {
-  border-color: #3354ff;
+  border-color: #00A2B2;
+  background-color: rgba(255, 255, 255, 0.80);
 }
 
 /* Error Message */
@@ -386,31 +391,33 @@
 
 /* Login Button */
 .login-button {
-  background-color: #3354ff;
+  background-color: #00A2B2;
+  border: 2px solid white;
   color: white;
-  border: none;
   padding: 12px 40px;
-  border-radius: 50px;
   font-size: 16px;
   cursor: pointer;
   width: 100%;
-  margin-top: 20px;
+  transition: 0.3s;
+  margin-top: 30px;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
 }
 
 .login-button:hover {
-  background-color: #2563eb;
+  background-color: #40bdc9;
 }
 
 .login-button:disabled {
-  background-color: #cccccc;
+  background-color: #40bdc9;
   cursor: not-allowed;
 }
 
 /* Powered by InLogic */
 .powered-by {
   font-size: 12px;
-  color: #555;
-  margin-top: 20px;
+  color: #ffffff;
+  padding-top: 30px;
+  margin-bottom: -10px;
 }
 
 .chat-container .powered-by {
