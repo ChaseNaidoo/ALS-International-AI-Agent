@@ -4,7 +4,11 @@ import * as pdfjsLib from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 import "./App.css";
 
-// Login component remains unchanged
+// Utility to generate a unique session ID
+const generateSessionId = () => {
+  return "session_" + Math.random().toString(36).substring(2, 15) + Date.now();
+};
+
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,10 +32,12 @@ const Login = ({ onLogin }) => {
       const data = await response.json();
 
       if (data.response === "yes") {
+        const sessionId = generateSessionId();
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("loginTime", Date.now());
         sessionStorage.setItem("userEmail", email);
-        onLogin(email);
+        sessionStorage.setItem("sessionId", sessionId);
+        onLogin(email, sessionId);
       } else {
         setError("Invalid email or password.");
       }
@@ -75,7 +81,7 @@ const Login = ({ onLogin }) => {
   );
 };
 
-const Chatbot = ({ userEmail, onLogout }) => {
+const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const initialMessages = [
     {
       text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) or type a message to get started.",
@@ -92,9 +98,8 @@ const Chatbot = ({ userEmail, onLogout }) => {
   const [userInput, setUserInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // AI Agent webhook URL
+  // Webhook URLs
   const AI_AGENT_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
-  // Google Drive upload webhook URL (create this in n8n)
   const GOOGLE_DRIVE_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/587f8586-4b6e-4281-98ae-d24193aad60b";
 
   // Fetch chat history on mount
@@ -106,7 +111,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail }),
+            body: JSON.stringify({ email: userEmail, sessionId }),
           }
         );
         const data = await response.json();
@@ -123,7 +128,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
       }
     };
     fetchChatHistory();
-  }, [userEmail]);
+  }, [userEmail, sessionId]);
 
   // Save chat history when messages change
   useEffect(() => {
@@ -136,7 +141,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, messages }),
+            body: JSON.stringify({ email: userEmail, sessionId, messages }),
           }
         );
       } catch (error) {
@@ -145,7 +150,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
     };
     saveChatHistory();
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, userEmail, isHistoryLoaded]);
+  }, [messages, userEmail, sessionId, isHistoryLoaded]);
 
   // Generate a random filename
   const generateRandomFilename = () => {
@@ -165,6 +170,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
     const formData = new FormData();
     formData.append("message", userInput);
     formData.append("email", userEmail);
+    formData.append("sessionId", sessionId);
 
     try {
       const response = await fetch(AI_AGENT_WEBHOOK, {
@@ -173,10 +179,10 @@ const Chatbot = ({ userEmail, onLogout }) => {
       });
       const data = await response.json();
 
-      if (data.response) {
+      if (data.output) {
         setMessages((prev) => [
           ...prev,
-          { text: data.response, sender: "bot" },
+          { text: data.output, sender: "bot" },
         ]);
       } else {
         setMessages((prev) => [
@@ -238,8 +244,9 @@ const Chatbot = ({ userEmail, onLogout }) => {
 
     const randomFilename = generateRandomFilename();
     const formData = new FormData();
-    formData.append("file", file, randomFilename); // Attach file with random name
+    formData.append("file", file, randomFilename);
     formData.append("email", userEmail);
+    formData.append("sessionId", sessionId);
 
     try {
       // Step 1: Upload file to Google Drive via n8n webhook
@@ -259,6 +266,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
         const aiFormData = new FormData();
         aiFormData.append("message", `Parse client brief: ${randomFilename}`);
         aiFormData.append("email", userEmail);
+        aiFormData.append("sessionId", sessionId);
 
         const aiResponse = await fetch(AI_AGENT_WEBHOOK, {
           method: "POST",
@@ -266,10 +274,10 @@ const Chatbot = ({ userEmail, onLogout }) => {
         });
         const aiData = await aiResponse.json();
 
-        if (aiData.response) {
+        if (aiData.output) {
           setMessages((prev) => [
             ...prev,
-            { text: aiData.response, sender: "bot" },
+            { text: aiData.output, sender: "bot" },
           ]);
         } else {
           setMessages((prev) => [
@@ -318,6 +326,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
     sessionStorage.removeItem("isLoggedIn");
     sessionStorage.removeItem("loginTime");
     sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("sessionId");
     onLogout();
   };
 
@@ -405,7 +414,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
         </div>
       </div>
       <p className="powered-by">Powered by</p>
-      <img src="/inlogic_logo_white.png" alt="inlogic_logo" className="inlogic_logo"/>
+      <img src="/inlogic_logo_white.png" alt="inlogic_logo" className="inlogic_logo" />
     </div>
   );
 };
@@ -415,6 +424,7 @@ const App = () => {
     sessionStorage.getItem("isLoggedIn") === "true"
   );
   const [userEmail, setUserEmail] = useState(sessionStorage.getItem("userEmail"));
+  const [sessionId, setSessionId] = useState(sessionStorage.getItem("sessionId"));
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -428,8 +438,10 @@ const App = () => {
         sessionStorage.removeItem("isLoggedIn");
         sessionStorage.removeItem("loginTime");
         sessionStorage.removeItem("userEmail");
+        sessionStorage.removeItem("sessionId");
         setIsLoggedIn(false);
         setUserEmail(null);
+        setSessionId(null);
       }, timeout);
     };
 
@@ -443,18 +455,20 @@ const App = () => {
     };
   }, [isLoggedIn]);
 
-  const handleLogin = (email) => {
+  const handleLogin = (email, sessionId) => {
     setIsLoggedIn(true);
     setUserEmail(email);
+    setSessionId(sessionId);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserEmail(null);
+    setSessionId(null);
   };
 
   return isLoggedIn ? (
-    <Chatbot userEmail={userEmail} onLogout={handleLogout} />
+    <Chatbot userEmail={userEmail} sessionId={sessionId} onLogout={handleLogout} />
   ) : (
     <Login onLogin={handleLogin} />
   );
