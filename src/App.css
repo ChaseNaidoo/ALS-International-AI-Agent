@@ -19,18 +19,19 @@
 .chat-box {
   width: 100%;
   height: 100vh;
-  max-height: 93%;
+  max-height: 88%;
   max-width: 60%;
-  margin-bottom: 5%;
+  margin-bottom: 3%;
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 50px 0px 7% 20px;
-  border-width: 2px;
+  padding: 35px 0px 7% 20px;
+  border-width: 3px;
   border-color: white;
-  gap: 10px
+  position: absolute;
+  z-index: 1;
 }
 
 
@@ -46,6 +47,7 @@
   min-height: 80%;
   gap: 8px;
   padding-left: 2%;
+  margin-bottom: -62%;
   z-index: 3;
 }
 
@@ -71,17 +73,37 @@
   background-color: white;
   color: #00A2B2;
   align-self: flex-end;
-  margin-right: 50px;
-  border-radius: 30px 30px 10px 30px;
+  margin-right: 30px;
+  border-radius: 10px 10px 0px 10px;
   padding: 10px 20px 10px 20px;
 }
 
 /* Input area */
+/* Input area */
 .input-container {
-  margin-top: 60%;
-  margin-bottom: 3%;
+  margin-top: 67%;
+  margin-left: 2%;
+  font-size: 12px;
   display: flex;
-  padding-left: 50px;
+  padding-left: 20px;
+  width: 75%;
+  height: 40px;
+  gap: 30px;
+  background-color: white;
+  z-index: 2;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+  align-items: center; /* Vertically center items */
+}
+
+/* Input field */
+.input-box {
+  background-color: white;
+  flex: 1; /* Allows the input box to grow and fill available space */
+  padding: 10px 5px 10px 0px;
+  border-radius: 50px;
+  font-size: 14px;
+  border: none; /* Optional: removes any default border */
+  outline: none; /* Optional: removes focus outline */
 }
 
 .file-upload-container {
@@ -122,38 +144,44 @@
 }
 
 .file-preview img:hover {
-  transform: scale(1.15);
-  border-color: #007bff;
+  transform: scale(1.04);
+  border-color: white;
 }
 
-.input-container p {
-  padding-bottom: 15%;
-}
-
-/* Input field */
-.input-box {
-  background-color: white;
-  flex: 1;
-  padding: 10px 5px 10px 20px;
-  margin-right: 10px;
-  border-radius: 50px;
+/* Send button */
+.send-message-button {
+  background-color: #00A2B2;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+  border-width: 2px;
+  border-color: white;
+  color: white;
+  padding: 10px 50px;
+  margin-left: 76%;
+  cursor: pointer;
   font-size: 14px;
+  transition: 0.3s;
+}
+
+.send-message-button:hover {
+  background-color: #40bdc9;
 }
 
 /* Send button */
 .send-button {
   background-color: #00A2B2;
   color: white;
-  border: none;
-  padding: 10px 50px;
-  margin-top: 5%;
+  padding: 8px 30px;
   margin-right: 50px;
+  margin-top: 15px;
   cursor: pointer;
   font-size: 14px;
+  border-color:white;
+  border-width: 2px;
+  transition: 0.3s;
 }
 
 .send-button:hover {
-  background-color: #2563eb;
+  background-color: #ffffff60;
 }
 
 .file-name {
@@ -200,21 +228,22 @@
   color: white;
   position: absolute;
   left: 1.5%;
-  margin-bottom: 31.5%;
+  margin-bottom: 34%;
   padding-right: 65%;
 }
 
 .chat-logo {
   position: relative;
+  bottom: 70.3%;
   left: -62%;  /* Moves it to the left */
-  top: 14.5%;    /* Moves it lower */
   width: 550px; /* Adjust size as needed */
 }
 
 /* Button container for Restart and Logout */
 .button-container {
   width: 100%;
-  padding-top: 70%;
+  position: absolute;
+  padding-top: 20%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -222,35 +251,43 @@
 
 .restart_button {
   background-color: transparent;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adds a soft black shadow */
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
   color: white;
-  padding: 5px 20px;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.638);
+  padding: 8px 10px;
   font-size: 14px;
-  width: 20%;
+  width: 15%;
   margin-left: 2%;
+  margin-top: 37%;
   cursor: pointer;
   transition: 0.3s; /* Smooth transition for hover effect */
 }
 
 .restart_button:hover {
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Increases shadow on hover */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4); /* Increases shadow on hover */
   background-color: #ffffff20;
 }
 
 .logout_button {
-  background-color: #ff3333; /* Red to distinguish from restart */
+  background-color: rgba(255, 255, 255, 0.20);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adds a soft black shadow */
   color: white;
-  padding: 5px 20px;
-  border-radius: 50px;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.744);
+  padding: 5px 5px;
   font-size: 14px;
-  width: 20%;
+  width: 10%;
   margin-right: 2%;
+  margin-top: -94%;
   cursor: pointer;
-  border: none;
+  transition: 0.3s; /* Smooth transition for hover effect */
+  backdrop-filter: blur(10px); /* Adds blur effect to the background */
 }
 
 .logout_button:hover {
-  background-color: #cc0000;
+  background-color: #cd3535;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Increases shadow on hover */
 }
 
 .review_answers_button {
@@ -292,36 +329,40 @@
 
 /* Login Container */
 .login-container {
-  background-image: url(./assets/inlogic_backgroud.svg);
+  background-image: url(./assets/london_background.jpg);
+  background-size: cover;  /* Ensures the image covers the entire container */
+  background-position: -20% center;  /* Moves the image to the left */
+  background-repeat: no-repeat;  /* Prevents tiling */
   height: 100vh;
+  width: 100vw;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;      /* Centers vertically */
   overflow: hidden;
+  position: relative;
 }
 
 /* Login Box */
 .login-box {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
   padding: 40px;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 400px;
+  max-width: 500px;  /* Keeps the box from stretching too wide */
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+  border-width: 3px;
+  border-color: white;
 }
 
-.login-box h1 {
-  font-size: 36px;
-  color: #3354ff;
-  margin-bottom: 10px;
+.chat-logo-login {
+  padding-bottom: 50px;
 }
 
 .subheading {
   font-size: 18px;
-  color: #555;
+  color: #ffffff;
   margin-bottom: 20px;
+  margin-top: -30px;
 }
 
 /* Input Fields */
@@ -329,15 +370,16 @@
   width: 100%;
   padding: 12px 20px;
   margin: 10px 0;
-  border: 2px solid #ccc;
-  border-radius: 50px;
+  border: 2px solid #ffffff80;
+  background-color: #ffffff60;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.3s;
+  transition: 0.3s;
 }
 
 .login-input:focus {
-  border-color: #3354ff;
+  border-color: #00A2B2;
+  background-color: rgba(255, 255, 255, 0.80);
 }
 
 /* Error Message */
@@ -349,39 +391,48 @@
 
 /* Login Button */
 .login-button {
-  background-color: #3354ff;
+  background-color: #00A2B2;
+  border: 2px solid white;
   color: white;
-  border: none;
   padding: 12px 40px;
-  border-radius: 50px;
   font-size: 16px;
   cursor: pointer;
   width: 100%;
-  margin-top: 20px;
+  transition: 0.3s;
+  margin-top: 30px;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
 }
 
 .login-button:hover {
-  background-color: #2563eb;
+  background-color: #40bdc9;
 }
 
 .login-button:disabled {
-  background-color: #cccccc;
+  background-color: #40bdc9;
   cursor: not-allowed;
 }
 
 /* Powered by InLogic */
 .powered-by {
   font-size: 12px;
-  color: #555;
-  margin-top: 20px;
+  color: #ffffff;
+  padding-top: 30px;
+  margin-bottom: -10px;
 }
 
 .chat-container .powered-by {
   position: absolute;
-  bottom: 10px;
-  right: 20px;
+  bottom: 11%;
+  right: 94.5%;
   font-size: 12px;
   color: white;
+  font-weight: 600;
+}
+
+.inlogic_logo {
+  width: 150px;
+  margin-right: 90%;
+  padding-bottom: 35px;
 }
 
 /* Media Query: Adjustments for Laptop Screens */
