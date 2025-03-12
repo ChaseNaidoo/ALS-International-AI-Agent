@@ -4,6 +4,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 import "./App.css";
 
+// Login component remains unchanged
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +45,7 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-box">
-      <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo-login" />
+        <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo-login" />
         <p className="subheading">Staff Login</p>
         <form onSubmit={handleLogin}>
           <input
@@ -90,6 +91,11 @@ const Chatbot = ({ userEmail, onLogout }) => {
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
   const [userInput, setUserInput] = useState("");
   const messagesEndRef = useRef(null);
+
+  // AI Agent webhook URL
+  const AI_AGENT_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
+  // Google Drive upload webhook URL (create this in n8n)
+  const GOOGLE_DRIVE_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/587f8586-4b6e-4281-98ae-d24193aad60b";
 
   // Fetch chat history on mount
   useEffect(() => {
@@ -141,14 +147,13 @@ const Chatbot = ({ userEmail, onLogout }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, userEmail, isHistoryLoaded]);
 
-  const sendToN8N = async (formData) => {
-    const response = await fetch(
-      "https://charliebessell.app.n8n.cloud/webhook-test/2bcbf8d5-b648-4ef2-9fd6-b7526f0bac63",
-      { method: "POST", body: formData }
-    );
-    return response.json();
+  // Generate a random filename
+  const generateRandomFilename = () => {
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `client_brief_${randomString}.pdf`;
   };
 
+  // Send message to AI agent webhook
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!userInput.trim()) return;
@@ -162,16 +167,21 @@ const Chatbot = ({ userEmail, onLogout }) => {
     formData.append("email", userEmail);
 
     try {
-      const response = await fetch(
-        "https://charliebessell.app.n8n.cloud/webhook-test/2bcbf8d5-b648-4ef2-9fd6-b7526f0bac63",
-        { method: "POST", body: formData }
-      );
+      const response = await fetch(AI_AGENT_WEBHOOK, {
+        method: "POST",
+        body: formData,
+      });
       const data = await response.json();
 
       if (data.response) {
         setMessages((prev) => [
           ...prev,
           { text: data.response, sender: "bot" },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { text: "No response from the AI agent.", sender: "bot" },
         ]);
       }
     } catch (error) {
@@ -182,6 +192,7 @@ const Chatbot = ({ userEmail, onLogout }) => {
     }
   };
 
+  // Handle file selection and thumbnail generation
   const handleFileSelect = async (selectedFile) => {
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile);
@@ -218,38 +229,67 @@ const Chatbot = ({ userEmail, onLogout }) => {
     }
   };
 
+  // Upload file to Google Drive and send filename to AI agent
   const handleFileUpload = async () => {
     if (!file) return;
 
     setIsUploading(true);
-    setMessages((prev) => [...prev, { text: "Uploading file...", sender: "bot" }]);
+    setMessages((prev) => [...prev, { text: "Uploading file to Google Drive...", sender: "bot" }]);
 
+    const randomFilename = generateRandomFilename();
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", file, randomFilename); // Attach file with random name
+    formData.append("email", userEmail);
 
     try {
-      const data = await sendToN8N(formData);
-      if (data.message) {
+      // Step 1: Upload file to Google Drive via n8n webhook
+      const uploadResponse = await fetch(GOOGLE_DRIVE_WEBHOOK, {
+        method: "POST",
+        body: formData,
+      });
+      const uploadData = await uploadResponse.json();
+
+      if (uploadData.success) {
         setMessages((prev) => [
           ...prev,
-          { text: "File uploaded successfully! Generating InMail draft...", sender: "bot" },
+          { text: "File uploaded to Google Drive successfully!", sender: "bot" },
         ]);
-      }
-      if (data.draft) {
-        setMessages((prev) => [
-          ...prev,
-          { text: `Here is your LinkedIn InMail draft:\n\n${data.draft}`, sender: "bot" },
-        ]);
+
+        // Step 2: Send the random filename to the AI agent webhook
+        const aiFormData = new FormData();
+        aiFormData.append("message", `Parse client brief: ${randomFilename}`);
+        aiFormData.append("email", userEmail);
+
+        const aiResponse = await fetch(AI_AGENT_WEBHOOK, {
+          method: "POST",
+          body: aiFormData,
+        });
+        const aiData = await aiResponse.json();
+
+        if (aiData.response) {
+          setMessages((prev) => [
+            ...prev,
+            { text: aiData.response, sender: "bot" },
+          ]);
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            { text: "No response from the AI agent for parsing.", sender: "bot" },
+          ]);
+        }
+      } else {
+        throw new Error("Upload failed");
       }
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { text: "Error uploading file. Please try again.", sender: "bot" },
+        { text: "Error uploading file or parsing brief. Please try again.", sender: "bot" },
       ]);
+    } finally {
+      setIsUploading(false);
+      setFile(null);
+      setPdfThumbnail(null);
     }
-    setIsUploading(false);
-    setFile(null);
-    setPdfThumbnail(null);
   };
 
   const handleDragOver = (event) => {
