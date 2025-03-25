@@ -313,69 +313,64 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   };
 
   // Upload file to Google Drive and send filename to AI agent
-  const handleFileUpload = async () => {
-    if (!file) return;
+  // Send file as binary data to AI agent
+const handleFileUpload = async () => {
+  if (!file) return;
 
-    setIsUploading(true);
-    setMessages((prev) => [...prev, { text: "Uploading file to Google Drive...", sender: "bot" }]);
+  setIsUploading(true);
+  setMessages((prev) => [...prev, { text: "Processing file...", sender: "bot" }]);
 
-    const randomFilename = generateRandomFilename();
+  const randomFilename = generateRandomFilename();
+  
+  try {
+    // Read file as binary data
+    const fileReader = new FileReader();
+    
+    // Promise to handle the file reading
+    const fileData = await new Promise((resolve) => {
+      fileReader.onload = () => resolve(fileReader.result);
+      fileReader.readAsArrayBuffer(file);
+    });
+
+    // Create FormData with binary file data
     const formData = new FormData();
-    formData.append("file", file, randomFilename);
+    formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
     formData.append("email", userEmail);
     formData.append("sessionId", sessionId);
+    formData.append("message", `Parse client brief`);
 
-    try {
-      // Step 1: Upload file to Google Drive via n8n webhook
-      const uploadResponse = await fetch(GOOGLE_DRIVE_WEBHOOK, {
-        method: "POST",
-        body: formData,
-      });
-      const uploadData = await uploadResponse.json();
+    // Send everything to AI agent webhook
+    const response = await fetch(AI_AGENT_WEBHOOK, {
+      method: "POST",
+      body: formData,
+    });
+    
+    const data = await response.json();
 
-      if (uploadData.success) {
-        setMessages((prev) => [
-          ...prev,
-          { text: "File uploaded to Google Drive successfully!", sender: "bot" },
-        ]);
-
-        // Step 2: Send the random filename to the AI agent webhook
-        const aiFormData = new FormData();
-        aiFormData.append("message", `Parse client brief: ${randomFilename}`);
-        aiFormData.append("email", userEmail);
-        aiFormData.append("sessionId", sessionId);
-
-        const aiResponse = await fetch(AI_AGENT_WEBHOOK, {
-          method: "POST",
-          body: aiFormData,
-        });
-        const aiData = await aiResponse.json();
-
-        if (aiData.output) {
-          setMessages((prev) => [
-            ...prev,
-            { text: aiData.output, sender: "bot" },
-          ]);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            { text: "No response from the AI agent for parsing.", sender: "bot" },
-          ]);
-        }
-      } else {
-        throw new Error("Upload failed");
-      }
-    } catch (error) {
+    if (data.output) {
       setMessages((prev) => [
         ...prev,
-        { text: "Error uploading file or parsing brief. Please try again.", sender: "bot" },
+        { text: "File processed successfully!", sender: "bot" },
+        { text: data.output, sender: "bot" },
       ]);
-    } finally {
-      setIsUploading(false);
-      setFile(null);
-      setPdfThumbnail(null);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { text: "No response from the AI agent for parsing.", sender: "bot" },
+      ]);
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    setMessages((prev) => [
+      ...prev,
+      { text: "Error processing file. Please try again.", sender: "bot" },
+    ]);
+  } finally {
+    setIsUploading(false);
+    setFile(null);
+    setPdfThumbnail(null);
+  }
+};
 
   const handleDragOver = (event) => {
     event.preventDefault();
