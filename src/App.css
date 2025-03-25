@@ -355,11 +355,13 @@
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
   padding: 40px;
-  max-width: 500px;  /* Keeps the box from stretching too wide */
+  height: 85%;
+  width: 45%;
   text-align: center;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
   border-width: 3px;
-  border-color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
 }
 
 .chat-logo-login {
@@ -369,7 +371,7 @@
 .subheading {
   font-size: 18px;
   color: #ffffff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-top: -30px;
 }
 
@@ -381,12 +383,17 @@
   border: 2px solid #ffffff80;
   background-color: #ffffff60;
   font-size: 14px;
+  border-radius: 15px;
   outline: none;
   transition: 0.3s;
 }
 
 .login-input:focus {
-  border-color: #00A2B2;
+  border-color: white;
+  background-color: rgba(255, 255, 255, 0.80);
+}
+
+.login-input:hover {
   background-color: rgba(255, 255, 255, 0.80);
 }
 
@@ -400,7 +407,8 @@
 /* Login Button */
 .login-button {
   background-color: #00A2B2;
-  border: 2px solid white;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 15px;
   color: white;
   padding: 12px 40px;
   font-size: 16px;
@@ -408,14 +416,100 @@
   width: 100%;
   transition: 0.3s;
   margin-top: 30px;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
 }
 
 .login-button:hover {
   background-color: #40bdc9;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
 }
 
 .login-button:disabled {
+  background-color: #40bdc9;
+  cursor: not-allowed;
+}
+
+/* Signup Container */
+.signup-container {
+  background-image: url(./assets/london_background.jpg);
+  background-size: cover;  /* Ensures the image covers the entire container */
+  background-position: -20% center;  /* Moves the image to the left */
+  background-repeat: no-repeat;  /* Prevents tiling */
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;      /* Centers vertically */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Login Box */
+.signup-box {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  height: 85%;
+  width: 45%;
+  text-align: center;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+  border-width: 3px;
+  border-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+}
+
+.chat-logo-signup {
+  padding-bottom: 50px;
+}
+
+.subheading-signup {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  margin-top: -30px;
+}
+
+/* Input Fields */
+.signup-input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px 0;
+  border: 2px solid #ffffff80;
+  background-color: #ffffff60;
+  font-size: 14px;
+  border-radius: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.signup-input:focus {
+  border-color: white;
+  background-color: rgba(255, 255, 255, 0.80);
+}
+
+.signup-input:hover {
+  background-color: rgba(255, 255, 255, 0.80);
+}
+
+/* Signup Button */
+.signup-button {
+  background-color: #00A2B2;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 15px;
+  color: white;
+  padding: 12px 40px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+  margin-top: 30px;
+}
+
+.signup-button:hover {
+  background-color: #40bdc9;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
+}
+
+.signup-button:disabled {
   background-color: #40bdc9;
   cursor: not-allowed;
 }
