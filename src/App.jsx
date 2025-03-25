@@ -9,7 +9,7 @@ const generateSessionId = () => {
   return "session_" + Math.random().toString(36).substring(2, 15) + Date.now();
 };
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, onSwitchToSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -76,6 +76,97 @@ const Login = ({ onLogin }) => {
           </button>
         </form>
         <p className="powered-by">Powered by InLogic</p>
+        <p className="switch-link" onClick={onSwitchToSignup}>
+          Don&apos;t have an account? Sign up here
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const Signup = ({ onSwitchToLogin }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try {
+      const response = await fetch(
+        "https://charliebessell.app.n8n.cloud/webhook/bdf05aca-69e0-463d-a767-a2e3f39a226d", // Replace with actual signup webhook URL
+        { method: "POST", body: formData }
+      );
+      const data = await response.json();
+
+      if (data.response === "yes") {
+        setError("Signup successful! Please login.");
+        setEmail("");
+        setPassword("");
+      } else if (data.response === "already") {
+        setError("This email is already registered. Please login instead.");
+      } else {
+        setError("Signup failed. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <div className="signup-container">
+      <div className="signup-box">
+        <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo-signup" />
+        <p className="subheading-signup">Staff Signup</p>
+        <form onSubmit={handleSignup}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <div className="password-toggle-container">
+            <input
+              type="checkbox"
+              id="show-password"
+              checked={showPassword}
+              onChange={togglePasswordVisibility}
+            />
+            <label htmlFor="show-password">Show Password</label>
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="signup-button" disabled={isLoading}>
+            {isLoading ? "Signing up..." : "Sign Up"}
+          </button>
+        </form>
+        <p className="powered-by">Powered by InLogic</p>
+        <p className="switch-link" onClick={onSwitchToLogin}>
+          Already have an account? Login here
+        </p>
       </div>
     </div>
   );
@@ -425,6 +516,7 @@ const App = () => {
   );
   const [userEmail, setUserEmail] = useState(sessionStorage.getItem("userEmail"));
   const [sessionId, setSessionId] = useState(sessionStorage.getItem("sessionId"));
+  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -459,18 +551,30 @@ const App = () => {
     setIsLoggedIn(true);
     setUserEmail(email);
     setSessionId(sessionId);
+    setShowSignup(false);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserEmail(null);
     setSessionId(null);
+    setShowSignup(false);
+  };
+
+  const handleSwitchToSignup = () => {
+    setShowSignup(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setShowSignup(false);
   };
 
   return isLoggedIn ? (
     <Chatbot userEmail={userEmail} sessionId={sessionId} onLogout={handleLogout} />
+  ) : showSignup ? (
+    <Signup onSwitchToLogin={handleSwitchToLogin} />
   ) : (
-    <Login onLogin={handleLogin} />
+    <Login onLogin={handleLogin} onSwitchToSignup={handleSwitchToSignup} />
   );
 };
 
