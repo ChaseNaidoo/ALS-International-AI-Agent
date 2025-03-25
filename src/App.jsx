@@ -89,7 +89,6 @@ const Signup = ({ onSwitchToLogin }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -123,10 +122,6 @@ const Signup = ({ onSwitchToLogin }) => {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <div className="signup-container">
       <div className="signup-box">
@@ -142,22 +137,13 @@ const Signup = ({ onSwitchToLogin }) => {
             className="signup-input"
           />
           <input
-            type={showPassword ? "text" : "password"}
+            type="text"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             className="signup-input"
           />
-          <div className="password-toggle-container">
-            <input
-              type="checkbox"
-              id="show-password"
-              checked={showPassword}
-              onChange={togglePasswordVisibility}
-            />
-            <label htmlFor="show-password">Show Password</label>
-          </div>
           {error && <p className="error-message">{error}</p>}
           <button type="submit" className="signup-button" disabled={isLoading}>
             {isLoading ? "Signing up..." : "Sign Up"}

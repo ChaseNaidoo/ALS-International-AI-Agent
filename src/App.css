@@ -349,25 +349,6 @@
   color: #40bdc9;
 }
 
-/* Password Toggle Container */
-.password-toggle-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 10px 0;
-  color: #ffffff;
-  font-size: 14px;
-}
-
-.password-toggle-container input[type="checkbox"] {
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-.password-toggle-container label {
-  cursor: pointer;
-}
-
 /* Login Container */
 .login-container {
   background-image: url(./assets/london_background.jpg);
