@@ -497,10 +497,10 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
             className="input-box"
           />
           <button>
-            <img src="/src/assets/paperclip_icon_als.png" alt="Send icon" className="paperclip-icon" />
+            <img src="/paperclip_icon_als.png" alt="Send icon" className="paperclip-icon" />
           </button>
           <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
-            <img src="/src/assets/send_icon_als.png" alt="Send icon" className="send-icon" />
+            <img src="/send_icon_als.png" alt="Send icon" className="send-icon" />
           </button>
         </form>
         <div className="button-container">
