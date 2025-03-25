@@ -20,16 +20,17 @@
   width: 100%;
   height: 100vh;
   max-height: 88%;
-  max-width: 60%;
-  margin-bottom: 3%;
+  max-width: 63%;
+  margin-bottom: 2%;
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 35px 0px 7% 20px;
+  padding: 35px 0px 4% 20px;
   border-width: 3px;
-  border-color: white;
+  border-radius: 15px;
+  border-color: rgba(255, 255, 255, 0.30);
   position: absolute;
   z-index: 1;
 }
@@ -46,7 +47,7 @@
   margin-bottom: -55%;
   min-height: 80%;
   gap: 8px;
-  padding-left: 2%;
+  padding-left: 1%;
   margin-bottom: -62%;
   z-index: 3;
 }
@@ -79,20 +80,24 @@
 }
 
 /* Input area */
-/* Input area */
 .input-container {
   margin-top: 67%;
-  margin-left: 2%;
+  margin-left: 1%;
   font-size: 12px;
   display: flex;
   padding-left: 20px;
-  width: 75%;
-  height: 40px;
+  width: 96%;
+  height: 50px;
+  border-radius: 15px;
   gap: 30px;
   background-color: white;
   z-index: 2;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
   align-items: center; /* Vertically center items */
+  transition: 0.3s;
+}
+
+.input-container:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
 }
 
 /* Input field */
@@ -149,19 +154,20 @@
 
 /* Send button */
 .send-message-button {
-  background-color: #00A2B2;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
-  border-width: 2px;
-  border-color: white;
-  color: white;
-  padding: 10px 50px;
-  margin-left: auto;
+  width: 35px;
+  height: 35px;
+  border: none;
   cursor: pointer;
-  font-size: 14px;
+  background-color: #00A2B2;
+  color: white;
+  margin-right: 1.5%;
+  padding: 1px;
+  border-radius: 50%;
   transition: 0.3s;
 }
 
 .send-message-button:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
   background-color: #40bdc9;
 }
 
@@ -170,7 +176,6 @@
   background-color: #00A2B2;
   color: white;
   padding: 8px 30px;
-  margin-right: 50px;
   margin-top: 15px;
   cursor: pointer;
   font-size: 14px;
@@ -202,7 +207,8 @@
 }
 
 .browse_files_container {
-  margin-top: 10%;
+  margin-top: 6%;
+  margin-left: -1%;
 }
 
 /* Browse Files */
@@ -210,8 +216,9 @@
   background-color: #00A2B2;
   color: white;
   border-width: 2px;
-  border-color: white;
-  padding: 8px 30px;
+  border-radius: 25px;
+  border-color: rgba(255, 255, 255, 0.65);
+  padding: 8px 24px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
@@ -223,19 +230,19 @@
 }
 
 .chat-container h1 {
-  font-size: 40px;
+  font-size: 34px;
   color: white;
   position: absolute;
-  left: 1.5%;
-  margin-bottom: 34%;
+  left: 1.2%;
+  margin-bottom: 34.5%;
   padding-right: 65%;
 }
 
 .chat-logo {
   position: relative;
-  bottom: 70.3%;
-  left: -62%;  /* Moves it to the left */
-  width: 550px; /* Adjust size as needed */
+  bottom: 11%;
+  left: -65.5%;  /* Moves it to the left */
+  width: 500px; /* Adjust size as needed */
 }
 
 /* Button container for Restart and Logout */
@@ -253,11 +260,12 @@
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* Adds a soft black shadow */
   color: white;
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.638);
+  border-color: rgba(255, 255, 255, 0.65);
+  border-radius: 25px;
   padding: 8px 10px;
   font-size: 14px;
-  width: 15%;
-  margin-left: 2%;
+  width: 13%;
+  margin-left: 1%;
   margin-top: 37%;
   cursor: pointer;
   transition: 0.3s; /* Smooth transition for hover effect */
@@ -274,11 +282,12 @@
   color: white;
   border-width: 1px;
   border-color: rgba(255, 255, 255, 0.744);
-  padding: 5px 5px;
+  border-radius: 10px;
+  padding: 5px 10px;
   font-size: 14px;
   width: 10%;
   margin-right: 2%;
-  margin-top: -94%;
+  margin-top: -94.5%;
   cursor: pointer;
   transition: 0.3s; /* Smooth transition for hover effect */
   backdrop-filter: blur(10px); /* Adds blur effect to the background */
@@ -415,22 +424,24 @@
 .powered-by {
   font-size: 12px;
   color: #ffffff;
-  padding-top: 30px;
-  margin-bottom: -10px;
+  padding-top: 25px;
+  margin-bottom: 29%;
+  margin-right: -0.5%;
 }
 
 .chat-container .powered-by {
   position: absolute;
-  bottom: 11%;
-  right: 94.5%;
+  bottom: 8.5%;
+  right: 95.1%;
   font-size: 12px;
   color: white;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .inlogic_logo {
   width: 150px;
-  margin-right: 90%;
+  margin-right: 89.7%;
+  margin-bottom: 28.5%;
   padding-bottom: 35px;
 }
 
