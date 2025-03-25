@@ -13,12 +13,14 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(""); // Added success state
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccess(""); // Clear previous success
 
     const formData = new FormData();
     formData.append("email", email);
@@ -37,6 +39,7 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
         sessionStorage.setItem("loginTime", Date.now());
         sessionStorage.setItem("userEmail", email);
         sessionStorage.setItem("sessionId", sessionId);
+        setSuccess("Login successful!"); // Set success message
         onLogin(email, sessionId);
       } else {
         setError("Invalid email or password.");
@@ -71,29 +74,32 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
             className="login-input"
           />
           {error && <p className="error-message">{error}</p>}
+          {success && <p className="success-message">{success}</p>}
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="powered-by">Powered by InLogic</p>
         <p className="switch-link" onClick={onSwitchToSignup}>
-          Don&apos;t have an account? Sign up here
+          Don't have an account? Sign up here
         </p>
       </div>
     </div>
   );
-}
+};
 
 const Signup = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(""); // Added success state
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccess(""); // Clear previous success
 
     const formData = new FormData();
     formData.append("email", email);
@@ -101,13 +107,13 @@ const Signup = ({ onSwitchToLogin }) => {
 
     try {
       const response = await fetch(
-        "https://charliebessell.app.n8n.cloud/webhook/bdf05aca-69e0-463d-a767-a2e3f39a226d", // Replace with actual signup webhook URL
+        "https://charliebessell.app.n8n.cloud/webhook/bdf05aca-69e0-463d-a767-a2e3f39a226d",
         { method: "POST", body: formData }
       );
       const data = await response.json();
 
       if (data.response === "yes") {
-        setError("Signup successful! Please login.");
+        setSuccess("Signup successful! Please login."); // Set success message
         setEmail("");
         setPassword("");
       } else if (data.response === "already") {
@@ -145,6 +151,7 @@ const Signup = ({ onSwitchToLogin }) => {
             className="signup-input"
           />
           {error && <p className="error-message">{error}</p>}
+          {success && <p className="success-message">{success}</p>}
           <button type="submit" className="signup-button" disabled={isLoading}>
             {isLoading ? "Signing up..." : "Sign Up"}
           </button>
@@ -173,6 +180,8 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const [pdfThumbnail, setPdfThumbnail] = useState(null);
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
   const [userInput, setUserInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [success, setSuccess] = useState(""); // Added success state
   const messagesEndRef = useRef(null);
 
   // Webhook URLs
@@ -243,6 +252,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     const userMessage = { text: userInput, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
     setUserInput("");
+    setIsTyping(true);
 
     const formData = new FormData();
     formData.append("message", userInput);
@@ -272,6 +282,8 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
         ...prev,
         { text: "Error processing your message. Please try again.", sender: "bot" },
       ]);
+    } finally {
+      setIsTyping(false);
     }
   };
 
@@ -313,64 +325,61 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   };
 
   // Upload file to Google Drive and send filename to AI agent
-  // Send file as binary data to AI agent
-const handleFileUpload = async () => {
-  if (!file) return;
+  const handleFileUpload = async () => {
+    if (!file) return;
 
-  setIsUploading(true);
-  setMessages((prev) => [...prev, { text: "Processing file...", sender: "bot" }]);
+    setIsUploading(true);
+    setIsTyping(true);
+    setMessages((prev) => [...prev, { text: "Processing file...", sender: "bot" }]);
 
-  const randomFilename = generateRandomFilename();
-  
-  try {
-    // Read file as binary data
-    const fileReader = new FileReader();
-    
-    // Promise to handle the file reading
-    const fileData = await new Promise((resolve) => {
-      fileReader.onload = () => resolve(fileReader.result);
-      fileReader.readAsArrayBuffer(file);
-    });
+    const randomFilename = generateRandomFilename();
 
-    // Create FormData with binary file data
-    const formData = new FormData();
-    formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
-    formData.append("email", userEmail);
-    formData.append("sessionId", sessionId);
-    formData.append("message", `Parse client brief`);
+    try {
+      const fileReader = new FileReader();
 
-    // Send everything to AI agent webhook
-    const response = await fetch(AI_AGENT_WEBHOOK, {
-      method: "POST",
-      body: formData,
-    });
-    
-    const data = await response.json();
+      const fileData = await new Promise((resolve) => {
+        fileReader.onload = () => resolve(fileReader.result);
+        fileReader.readAsArrayBuffer(file);
+      });
 
-    if (data.output) {
+      const formData = new FormData();
+      formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
+      formData.append("email", userEmail);
+      formData.append("sessionId", sessionId);
+      formData.append("message", `Parse client brief`);
+
+      const response = await fetch(AI_AGENT_WEBHOOK, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.output) {
+        setMessages((prev) => [
+          ...prev,
+          { text: "File processed successfully!", sender: "bot" },
+          { text: data.output, sender: "bot" },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { text: "No response from the AI agent for parsing.", sender: "bot" },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error:", error);
       setMessages((prev) => [
         ...prev,
-        { text: "File processed successfully!", sender: "bot" },
-        { text: data.output, sender: "bot" },
+        { text: "Error processing file. Please try again.", sender: "bot" },
       ]);
-    } else {
-      setMessages((prev) => [
-        ...prev,
-        { text: "No response from the AI agent for parsing.", sender: "bot" },
-      ]);
+    } finally {
+      setIsUploading(false);
+      setIsTyping(false);
+      setFile(null);
+      setPdfThumbnail(null);
     }
-  } catch (error) {
-    console.error("Error:", error);
-    setMessages((prev) => [
-      ...prev,
-      { text: "Error processing file. Please try again.", sender: "bot" },
-    ]);
-  } finally {
-    setIsUploading(false);
-    setFile(null);
-    setPdfThumbnail(null);
-  }
-};
+  };
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -399,6 +408,7 @@ const handleFileUpload = async () => {
     sessionStorage.removeItem("loginTime");
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("sessionId");
+    setSuccess("Logged out successfully!"); // Set success message
     onLogout();
   };
 
@@ -462,6 +472,20 @@ const handleFileUpload = async () => {
               )}
             </motion.div>
           ))}
+          {isTyping && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="message bot-message"
+            >
+              <div className="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </motion.div>
+          )}
+          {success && <p className="success-message">{success}</p>}
           <div ref={messagesEndRef} style={{ height: "1px" }} />
         </div>
         <form onSubmit={handleSendMessage} className="input-container">
@@ -472,8 +496,11 @@ const handleFileUpload = async () => {
             placeholder="Type your message here..."
             className="input-box"
           />
+          <button>
+            <img src="./src/assets/paperclip_icon_als.png" alt="Send icon" className="paperclip-icon" />
+          </button>
           <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
-            Send
+            <img src="./src/assets/send_icon_als.png" alt="Send icon" className="send-icon" />
           </button>
         </form>
         <div className="button-container">
