@@ -628,20 +628,27 @@ background: none;
 }
 
 /* Media Query: Adjustments for Laptop Screens */
-@media screen and (max-width: 1024px) and (max-width: 1440px) {
+@media screen and (max-width: 1439px) {
   .chat-container {
-    height: 100vh;
-    width: 100vw;
-    padding-right: 1.5%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .chat-box {
     height: 100vh;
-    max-height: 95%;
-    max-width: 70%;
+    max-height: 93%;
+    max-width: 65%;
     margin-top: 2%;
-    margin-right: 0.1%;
+    margin-bottom: 0.5%;
+    margin-right: -0.5%;
     padding: 20px 0px 5% 0px;
+  }
+
+  .chat-logo {
+    height: 60px;
+    width: auto;
+    margin-right: 2%;
   }
 
   .messages {
@@ -653,7 +660,7 @@ background: none;
   .message {
     max-width: 45%;
     margin-top: 1%;
-    margin-left: -1%;
+    margin-left: 2%;
   }
 
   .bot-message {
@@ -666,13 +673,14 @@ background: none;
   }
 
   .input-container {
-    margin-top: 60%;
-    margin-bottom: 3%;
-    margin-left: -1%;
+    margin-top: 64%;
+    margin-bottom: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
   }
 
   .input-box {
-    padding: 10px 5px 10px 20px;
+    padding: 10px 5px 10px 0px;
     font-size: 12px;
   }
 
@@ -683,9 +691,9 @@ background: none;
   }
 
   .chat-container h1 {
-    font-size: 38px;
-    margin-top: 5%;
-    padding-right: 70%;
+    font-size: 28px;
+    padding-right: 50%;
+    margin-bottom: 60%;
   }
 
   .button-container {
@@ -694,9 +702,17 @@ background: none;
     width: 80%;
   }
 
-  .restart_button,
+  .restart_button {
+    width: 22%;
+    margin-top: 99%;
+    margin-left: 4%;
+  }
+
   .logout_button {
     font-size: 12px;
+    margin-right: -27%;
+    margin-bottom: 76%;
+    width: 15%;
   }
 
   .file-name {
@@ -712,11 +728,31 @@ background: none;
 
   .file-upload-container {
     width: 45%;
-    margin-left: -1%;
+    margin-left: 2%;
   }
 
   .file-upload-container p {
     font-size: 12px;
+  }
+
+  .paperclip-icon {
+    height: 24px;
+    width: 24px;
+  }
+
+  .send-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .powered-by {
+    margin-bottom: 51%;
+    margin-right: -2.5%;
+  }
+
+  .inlogic_logo {
+    margin-bottom: 50%;
+    margin-right: 85.5%;
   }
 }
 
@@ -733,7 +769,7 @@ background: none;
     max-height: 85%;
     max-width: 95%;
     margin-top: 20%;
-    margin-bottom: 3%;
+    margin-bottom: 5%;
     margin-right: 1%;
     padding: 20px 0px 20px 0px;
   }
@@ -764,7 +800,6 @@ background: none;
     margin-left: 2%;
     margin-bottom: 6%;
     border-radius: 10px;
-    height: 8%;
   }
 
   .input-box {
@@ -796,13 +831,13 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 183%;
+    margin-bottom: 212%;
     margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 120%;
+    margin-bottom: 148%;
     margin-right: -44%;
     height: 45px;
     width: auto;
@@ -819,7 +854,7 @@ background: none;
   .restart_button{
     font-size: 10px;
     width: 30%;
-    margin-top: 160%;
+    margin-top: 189%;
     margin-left: -83%;
     position: fixed;
   }
@@ -827,8 +862,8 @@ background: none;
   .logout_button {
     font-size: 10px;
     width: 20%;
-    margin-right: -64.5%;
-    margin-top: -44.5%;
+    margin-right: -65%;
+    margin-top: -48%;
     border-radius: 8px;
     position: fixed;
   }
@@ -921,7 +956,7 @@ background: none;
     max-height: 85%;
     max-width: 95%;
     margin-top: 20%;
-    margin-bottom: 2%;
+    margin-bottom: 5%;
     margin-right: 1%;
     padding: 20px 0px 20px 0px;
   }
@@ -983,13 +1018,13 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 155.5%;
+    margin-bottom: 180.4%;
     margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 98%;
+    margin-bottom: 120%;
     margin-right: -37%;
     height: 48px;
     width: auto;
@@ -1006,7 +1041,7 @@ background: none;
   .restart_button{
     font-size: 10px;
     width: 30%;
-    margin-top: 135%;
+    margin-top: 159%;
     margin-left: -83%;
     position: fixed;
   }
@@ -1014,7 +1049,7 @@ background: none;
   .logout_button {
     font-size: 10px;
     width: 20%;
-    margin-right: -63%;
+    margin-right: -64%;
     margin-top: -40%;
     border-radius: 8px;
     position: fixed;
@@ -1108,7 +1143,7 @@ background: none;
     max-height: 85%;
     max-width: 95%;
     margin-top: 20%;
-    margin-bottom: 2%;
+    margin-bottom: 3%;
     margin-right: 1%;
     padding: 20px 0px 20px 0px;
   }
@@ -1170,13 +1205,13 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 136.8%;
-    margin-left: 2%;
+    margin-bottom: 158%;
+    margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 82%;
+    margin-bottom: 102%;
     margin-right: -31%;
     height: 50px;
     width: auto;
@@ -1193,7 +1228,7 @@ background: none;
   .restart_button{
     font-size: 10px;
     width: 25%;
-    margin-top: 117%;
+    margin-top: 138.5%;
     margin-left: -88%;
     position: fixed;
   }
@@ -1202,7 +1237,7 @@ background: none;
     font-size: 10px;
     width: 20%;
     margin-right: -64%;
-    margin-top: -35%;
+    margin-top: -38%;
     border-radius: 8px;
     position: fixed;
   }
