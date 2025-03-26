@@ -303,14 +303,14 @@ background: none;
   color: white;
   position: absolute;
   left: 1.2%;
-  margin-bottom: 34.5%;
+  top: 21%;
   padding-right: 65%;
 }
 
 .chat-logo {
   position: relative;
-  bottom: 11%;
-  left: -65.5%;  /* Moves it to the left */
+  bottom: 1.2%;
+  left: -69.5%;  /* Moves it to the left */
   width: 500px; /* Adjust size as needed */
 }
 
@@ -335,7 +335,7 @@ background: none;
   font-size: 14px;
   width: 13%;
   margin-left: 1%;
-  margin-top: 37%;
+  margin-top: 8%;
   cursor: pointer;
   transition: 0.3s; /* Smooth transition for hover effect */
 }
@@ -355,7 +355,7 @@ background: none;
   font-size: 14px;
   width: 10%;
   margin-right: 2%;
-  margin-top: -94.5%;
+  margin-top: -93%;
   cursor: pointer;
   transition: 0.3s; /* Smooth transition for hover effect */
 }
@@ -605,10 +605,10 @@ background: none;
 /* Powered by InLogic */
 .powered-by {
   font-size: 12px;
+  position: absolute;
   color: #ffffff;
-  padding-top: 25px;
-  margin-bottom: 29%;
-  margin-right: -0.5%;
+  top: 29%;
+  left: 1.3%;
 }
 
 .chat-container .powered-by {
@@ -621,10 +621,10 @@ background: none;
 }
 
 .inlogic_logo {
+  position: relative;
   width: 150px;
-  margin-right: 89.7%;
-  margin-bottom: 28.5%;
-  padding-bottom: 35px;
+  top: 8%;
+  left: -1.5%;
 }
 
 /* Media Query: Adjustments for Laptop Screens */
@@ -648,7 +648,8 @@ background: none;
   .chat-logo {
     height: 60px;
     width: auto;
-    margin-right: 2%;
+    margin-right: -0.5%;
+    top: -11.5%;
   }
 
   .messages {
@@ -693,7 +694,8 @@ background: none;
   .chat-container h1 {
     font-size: 28px;
     padding-right: 50%;
-    margin-bottom: 60%;
+    margin-top: -3.5%;
+    margin-left: 0.5%;
   }
 
   .button-container {
@@ -746,20 +748,21 @@ background: none;
   }
 
   .powered-by {
-    margin-bottom: 51%;
-    margin-right: -2.5%;
+    margin-top: -4.5%;
+    margin-right: -3%;
+    margin-left: 0.5%;
   }
 
   .inlogic_logo {
-    margin-bottom: 50%;
-    margin-right: 85.5%;
+    margin-bottom: 53%;
+    margin-right: 84.5%;
   }
 }
 
 /* Media Query: Adjustments for Large Laptop Screens */
 @media screen and (min-width: 1440px) {
   .chat-logo {
-    margin-right:  -0.2%;
+    margin-right:  -2%;
     margin-bottom: 1.5%;
     height: 90px;
     width: auto;
@@ -774,7 +777,7 @@ background: none;
   }
 
   .restart_button {
-    margin-bottom: -55%;
+    margin-bottom: -70%;
   }
 
   .powered-by {
@@ -783,8 +786,8 @@ background: none;
   }
 
   .inlogic_logo {
-    margin-bottom: 31%;
-    margin-right: 89.2%;
+    margin-bottom: 34.5%;
+    margin-right: 88.5%;
   }
 }
 
@@ -863,14 +866,14 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 212%;
+    top: 9.8%;
     margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 148%;
-    margin-right: -44%;
+    margin-bottom: 134%;
+    margin-right: -45%;
     height: 45px;
     width: auto;
   }
@@ -883,7 +886,7 @@ background: none;
     gap: 10px;
   }
 
-  .restart_button{
+  .restart_button {
     font-size: 10px;
     width: 30%;
     margin-top: 189%;
@@ -1163,7 +1166,7 @@ background: none;
   }
 }
 
-@media screen and (min-width: 377px) and (max-width: 769px){
+@media screen and (min-width: 374px) and (max-width: 480px) {
   .chat-container {
     padding-right: 1.5%;
     background-position: center;
@@ -1237,14 +1240,14 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 158%;
+    top: 11%;
     margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 102%;
-    margin-right: -31%;
+    top: -4%;
+    margin-right: -42%;
     height: 50px;
     width: auto;
   }
@@ -1257,10 +1260,10 @@ background: none;
     gap: 10px;
   }
 
-  .restart_button{
+  .restart_button {
     font-size: 10px;
     width: 25%;
-    margin-top: 138.5%;
+    margin-top: 159%;
     margin-left: -88%;
     position: fixed;
   }
@@ -1269,7 +1272,7 @@ background: none;
     font-size: 10px;
     width: 20%;
     margin-right: -64%;
-    margin-top: -38%;
+    margin-top: -43%;
     border-radius: 8px;
     position: fixed;
   }
