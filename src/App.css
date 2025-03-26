@@ -628,20 +628,27 @@ background: none;
 }
 
 /* Media Query: Adjustments for Laptop Screens */
-@media screen and (max-width: 1440px) {
+@media screen and (max-width: 1439px) {
   .chat-container {
-    height: 100vh;
-    width: 100vw;
-    padding-right: 1.5%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .chat-box {
     height: 100vh;
-    max-height: 95%;
-    max-width: 70%;
+    max-height: 93%;
+    max-width: 65%;
     margin-top: 2%;
-    margin-right: 0.1%;
+    margin-bottom: 0.5%;
+    margin-right: -0.5%;
     padding: 20px 0px 5% 0px;
+  }
+
+  .chat-logo {
+    height: 60px;
+    width: auto;
+    margin-right: 2%;
   }
 
   .messages {
@@ -653,7 +660,7 @@ background: none;
   .message {
     max-width: 45%;
     margin-top: 1%;
-    margin-left: -1%;
+    margin-left: 2%;
   }
 
   .bot-message {
@@ -666,13 +673,14 @@ background: none;
   }
 
   .input-container {
-    margin-top: 60%;
-    margin-bottom: 3%;
-    margin-left: -1%;
+    margin-top: 64%;
+    margin-bottom: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
   }
 
   .input-box {
-    padding: 10px 5px 10px 20px;
+    padding: 10px 5px 10px 0px;
     font-size: 12px;
   }
 
@@ -683,9 +691,9 @@ background: none;
   }
 
   .chat-container h1 {
-    font-size: 38px;
-    margin-top: 5%;
-    padding-right: 70%;
+    font-size: 28px;
+    padding-right: 50%;
+    margin-bottom: 60%;
   }
 
   .button-container {
@@ -694,9 +702,17 @@ background: none;
     width: 80%;
   }
 
-  .restart_button,
+  .restart_button {
+    width: 22%;
+    margin-top: 99%;
+    margin-left: 4%;
+  }
+
   .logout_button {
     font-size: 12px;
+    margin-right: -27%;
+    margin-bottom: 76%;
+    width: 15%;
   }
 
   .file-name {
@@ -712,11 +728,31 @@ background: none;
 
   .file-upload-container {
     width: 45%;
-    margin-left: -1%;
+    margin-left: 2%;
   }
 
   .file-upload-container p {
     font-size: 12px;
+  }
+
+  .paperclip-icon {
+    height: 24px;
+    width: 24px;
+  }
+
+  .send-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .powered-by {
+    margin-bottom: 51%;
+    margin-right: -2.5%;
+  }
+
+  .inlogic_logo {
+    margin-bottom: 50%;
+    margin-right: 85.5%;
   }
 }
 
