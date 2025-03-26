@@ -79,7 +79,7 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="powered-by">Powered by InLogic</p>
+        <p className="powered-by-login">Powered by InLogic</p>
         <p className="switch-link" onClick={onSwitchToSignup}>
           Don&apos;t have an account? Sign up here
         </p>
@@ -156,7 +156,7 @@ const Signup = ({ onSwitchToLogin }) => {
             {isLoading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
-        <p className="powered-by">Powered by InLogic</p>
+        <p className="powered-by-login">Powered by InLogic</p>
         <p className="switch-link" onClick={onSwitchToLogin}>
           Already have an account? Login here
         </p>

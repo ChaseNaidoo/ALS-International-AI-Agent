@@ -545,6 +545,12 @@ background: none;
   border-radius: 15px;
 }
 
+.powered-by-login {
+  margin-bottom: 28%;
+  margin-top: 2%;
+  color: white;
+}
+
 .chat-logo-signup {
   padding-bottom: 50px;
 }
