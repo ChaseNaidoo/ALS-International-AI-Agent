@@ -433,7 +433,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
           </button>
         </div>
       </div>
-      <p className="powered-by">Powered by</p>
+      <p className="poweredby">Powered by</p>
       <img src="/inlogic_logo_white.png" alt="inlogic_logo" className="inlogic_logo" />
     </div>
   );
