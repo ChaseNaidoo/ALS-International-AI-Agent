@@ -756,6 +756,38 @@ background: none;
   }
 }
 
+/* Media Query: Adjustments for Large Laptop Screens */
+@media screen and (min-width: 1440px) {
+  .chat-logo {
+    margin-right:  -0.2%;
+    margin-bottom: 1.5%;
+    height: 90px;
+    width: auto;
+  }
+
+  .chat-container h1 {
+    margin-bottom: 38%;
+  }
+
+  .logout_button {
+    margin-bottom: -39%;
+  }
+
+  .restart_button {
+    margin-bottom: -55%;
+  }
+
+  .powered-by {
+    margin-bottom: 31.5%;
+    margin-right: -0.8%;
+  }
+
+  .inlogic_logo {
+    margin-bottom: 31%;
+    margin-right: 89.2%;
+  }
+}
+
 /* Media Query: Adjustments for Mobile (max-width: 320px) */
 @media screen and (max-width: 320px) {
   .chat-container {
