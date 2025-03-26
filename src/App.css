@@ -921,7 +921,7 @@ background: none;
     max-height: 85%;
     max-width: 95%;
     margin-top: 20%;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     margin-right: 1%;
     padding: 20px 0px 20px 0px;
   }
@@ -983,13 +983,13 @@ background: none;
 
   .chat-container h1 {
     font-size: 16px;
-    margin-bottom: 180.4%;
+    margin-bottom: 155.5%;
     margin-left: 2.5%;
     padding-right: 15%;
   }
 
   .chat-logo {
-    margin-bottom: 120%;
+    margin-bottom: 98%;
     margin-right: -37%;
     height: 48px;
     width: auto;
@@ -1006,7 +1006,7 @@ background: none;
   .restart_button{
     font-size: 10px;
     width: 30%;
-    margin-top: 159%;
+    margin-top: 135%;
     margin-left: -83%;
     position: fixed;
   }
@@ -1014,7 +1014,7 @@ background: none;
   .logout_button {
     font-size: 10px;
     width: 20%;
-    margin-right: -64%;
+    margin-right: -63%;
     margin-top: -40%;
     border-radius: 8px;
     position: fixed;
