@@ -81,7 +81,7 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
         </form>
         <p className="powered-by">Powered by InLogic</p>
         <p className="switch-link" onClick={onSwitchToSignup}>
-          Don't have an account? Sign up here
+          Don&apos;t have an account? Sign up here
         </p>
       </div>
     </div>
@@ -168,7 +168,7 @@ const Signup = ({ onSwitchToLogin }) => {
 const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const initialMessages = [
     {
-      text: "Welcome to ALS International Recruitment Assistant! Upload a client brief (PDF) or type a message to get started.",
+      text: "Welcome to ALS International Recruitment Assistant! Type a message or upload a client brief (PDF) or CV (PDF) to get started.",
       sender: "bot",
     },
   ];
@@ -176,17 +176,16 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
   const [pdfThumbnail, setPdfThumbnail] = useState(null);
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [success, setSuccess] = useState(""); // Added success state
+  const [success, setSuccess] = useState("");
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // Webhook URLs
   const AI_AGENT_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
-  const GOOGLE_DRIVE_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/587f8586-4b6e-4281-98ae-d24193aad60b";
 
   // Fetch chat history on mount
   useEffect(() => {
@@ -287,47 +286,18 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     }
   };
 
-  // Handle file selection and thumbnail generation
-  const handleFileSelect = async (selectedFile) => {
-    if (selectedFile && selectedFile.type === "application/pdf") {
-      setFile(selectedFile);
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: "PDF file uploaded successfully! Click 'Upload PDF' to continue.",
-          sender: "bot",
-          showUploadButton: true,
-        },
-      ]);
-
-      const fileReader = new FileReader();
-      fileReader.onload = async () => {
-        const pdfData = new Uint8Array(fileReader.result);
-        const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
-        const page = await pdf.getPage(1);
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        await page.render({ canvasContext: context, viewport }).promise;
-        const thumbnailUrl = canvas.toDataURL("image/png");
-        setPdfThumbnail(thumbnailUrl);
-      };
-      fileReader.readAsArrayBuffer(selectedFile);
-    } else {
+  // Handle file selection and upload
+  const handleFileSelect = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile || selectedFile.type !== "application/pdf") {
       setMessages((prev) => [
         ...prev,
         { text: "Please upload a valid PDF file.", sender: "bot" },
       ]);
+      return;
     }
-  };
 
-  // Upload file to Google Drive and send filename to AI agent
-  const handleFileUpload = async () => {
-    if (!file) return;
-
+    setFile(selectedFile);
     setIsUploading(true);
     setIsTyping(true);
     setMessages((prev) => [...prev, { text: "Processing file...", sender: "bot" }]);
@@ -336,17 +306,16 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
 
     try {
       const fileReader = new FileReader();
-
       const fileData = await new Promise((resolve) => {
         fileReader.onload = () => resolve(fileReader.result);
-        fileReader.readAsArrayBuffer(file);
+        fileReader.readAsArrayBuffer(selectedFile);
       });
 
       const formData = new FormData();
       formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
       formData.append("email", userEmail);
       formData.append("sessionId", sessionId);
-      formData.append("message", `Parse client brief`);
+      formData.append("message", "Parse");
 
       const response = await fetch(AI_AGENT_WEBHOOK, {
         method: "POST",
@@ -378,23 +347,12 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       setIsTyping(false);
       setFile(null);
       setPdfThumbnail(null);
+      if (fileInputRef.current) fileInputRef.current.value = ""; // Reset file input
     }
   };
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setDragOver(false);
-    const droppedFile = event.dataTransfer.files[0];
-    handleFileSelect(droppedFile);
+  const handlePaperclipClick = () => {
+    fileInputRef.current?.click();
   };
 
   const resetChat = () => {
@@ -408,7 +366,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     sessionStorage.removeItem("loginTime");
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("sessionId");
-    setSuccess("Logged out successfully!"); // Set success message
+    setSuccess("Logged out successfully!");
     onLogout();
   };
 
@@ -418,42 +376,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       <h1>Recruitment Assistant</h1>
       <div className="chat-box">
         <div className="messages">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="message bot-message"
-          >
-            {initialMessages[0].text}
-          </motion.div>
-          <motion.div
-            className={`file-upload-container ${dragOver ? "drag-over" : ""}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <p>Drag and drop a PDF here, or click below to browse for the file</p>
-            {pdfThumbnail && (
-              <div className="file-preview">
-                <img src={pdfThumbnail} alt="PDF Thumbnail" />
-              </div>
-            )}
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => handleFileSelect(e.target.files[0])}
-              id="file-input"
-              style={{ display: "none" }}
-            />
-            <div className="browse_files_container">
-              <label htmlFor="file-input" className="browse_files_button">
-                Browse Files
-              </label>
-              {file && <p className="file-name">{file.name}</p>}
-            </div>
-          </motion.div>
-          {messages.slice(1).map((msg, index) => (
+          {messages.map((msg, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 10 }}
@@ -461,15 +384,6 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
               className={`message ${msg.sender === "bot" ? "bot-message" : "user-message"}`}
             >
               {msg.text}
-              {msg.showUploadButton && !isUploading && (
-                <button
-                  className="send-button"
-                  onClick={handleFileUpload}
-                  disabled={!file || isUploading}
-                >
-                  {isUploading ? "Uploading..." : "Upload PDF"}
-                </button>
-              )}
             </motion.div>
           ))}
           {isTyping && (
@@ -496,9 +410,16 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
             placeholder="Type your message here..."
             className="input-box"
           />
-          <button>
-            <img src="/paperclip_icon_als.png" alt="Send icon" className="paperclip-icon" />
+          <button type="button" onClick={handlePaperclipClick}>
+            <img src="/paperclip_icon_als.png" alt="Upload icon" className="paperclip-icon" />
           </button>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileSelect}
+            ref={fileInputRef}
+            style={{ display: "none" }}
+          />
           <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
             <img src="/send_icon_als.png" alt="Send icon" className="send-icon" />
           </button>
