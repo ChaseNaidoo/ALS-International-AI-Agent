@@ -254,7 +254,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     setIsTyping(true);
 
     const formData = new FormData();
-    formData.append("message", userInput);
+    formData.append("chatInput", userInput);
     formData.append("email", userEmail);
     formData.append("sessionId", sessionId);
 
