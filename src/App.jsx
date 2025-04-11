@@ -1,3 +1,4 @@
+// App.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as pdfjsLib from "pdfjs-dist";
@@ -9,18 +10,23 @@ const generateSessionId = () => {
   return "session_" + Math.random().toString(36).substring(2, 15) + Date.now();
 };
 
+// Utility to generate a chat ID
+const generateChatId = () => {
+  return "chat_" + Math.random().toString(36).substring(2, 15) + Date.now();
+};
+
 const Login = ({ onLogin, onSwitchToSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // Added success state
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setSuccess(""); // Clear previous success
+    setSuccess("");
 
     const formData = new FormData();
     formData.append("email", email);
@@ -39,7 +45,7 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
         sessionStorage.setItem("loginTime", Date.now());
         sessionStorage.setItem("userEmail", email);
         sessionStorage.setItem("sessionId", sessionId);
-        setSuccess("Login successful!"); // Set success message
+        setSuccess("Login successful!");
         onLogin(email, sessionId);
       } else {
         setError("Invalid email or password.");
@@ -64,6 +70,8 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="login-input"
+            aria-label="Email"
+            aria-describedby={error ? "error-message" : success ? "success-message" : undefined}
           />
           <input
             type="password"
@@ -72,16 +80,26 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="login-input"
+            aria-label="Password"
+            aria-describedby={error ? "error-message" : success ? "success-message" : undefined}
           />
-          {error && <p className="error-message">{error}</p>}
-          {success && <p className="success-message">{success}</p>}
+          {error && (
+            <p id="error-message" className="error-message">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p id="success-message" className="success-message">
+              {success}
+            </p>
+          )}
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="powered-by-login">Powered by InLogic</p>
         <p className="switch-link" onClick={onSwitchToSignup}>
-          Don&apos;t have an account? Sign up here
+          Don't have an account? Sign up here
         </p>
       </div>
     </div>
@@ -92,14 +110,14 @@ const Signup = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // Added success state
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setSuccess(""); // Clear previous success
+    setSuccess("");
 
     const formData = new FormData();
     formData.append("email", email);
@@ -113,7 +131,7 @@ const Signup = ({ onSwitchToLogin }) => {
       const data = await response.json();
 
       if (data.response === "yes") {
-        setSuccess("Signup successful! Please login."); // Set success message
+        setSuccess("Signup successful! Please login.");
         setEmail("");
         setPassword("");
       } else if (data.response === "already") {
@@ -141,17 +159,29 @@ const Signup = ({ onSwitchToLogin }) => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="signup-input"
+            aria-label="Email"
+            aria-describedby={error ? "error-message" : success ? "success-message" : undefined}
           />
           <input
-            type="text"
+            type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             className="signup-input"
+            aria-label="Password"
+            aria-describedby={error ? "error-message" : success ? "success-message" : undefined}
           />
-          {error && <p className="error-message">{error}</p>}
-          {success && <p className="success-message">{success}</p>}
+          {error && (
+            <p id="error-message" className="error-message">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p id="success-message" className="success-message">
+              {success}
+            </p>
+          )}
           <button type="submit" className="signup-button" disabled={isLoading}>
             {isLoading ? "Signing up..." : "Sign Up"}
           </button>
@@ -170,22 +200,41 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     {
       text: "Welcome to ALS International Recruitment Assistant! Type a message or upload a client brief (PDF) or CV (PDF) to get started.",
       sender: "bot",
+      timestamp: new Date().toLocaleTimeString(),
     },
   ];
 
+  const [chatHistory, setChatHistory] = useState([]);
+  const [currentChatId, setCurrentChatId] = useState(generateChatId());
   const [messages, setMessages] = useState(initialMessages);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [pdfThumbnail, setPdfThumbnail] = useState(null);
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [success, setSuccess] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768); // Default to true on larger screens
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Webhook URLs
   const AI_AGENT_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
+
+  // Auto-focus input on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  // Handle window resize to toggle sidebar visibility
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch chat history on mount
   useEffect(() => {
@@ -201,13 +250,24 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
         );
         const data = await response.json();
         if (data.messages && Array.isArray(data.messages)) {
-          setMessages(data.messages);
+          const loadedChats = data.messages.map((chat) => ({
+            id: chat.id || generateChatId(),
+            messages: chat.messages || initialMessages,
+            title: chat.messages[0]?.text.slice(0, 30) + "..." || "New Chat",
+          }));
+          setChatHistory(loadedChats);
+          if (loadedChats.length > 0) {
+            setCurrentChatId(loadedChats[0].id);
+            setMessages(loadedChats[0].messages);
+          } else {
+            setMessages(initialMessages);
+          }
         } else {
-          setMessages(initialMessages);
+          setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
-        setMessages(initialMessages);
+        setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
       } finally {
         setIsHistoryLoaded(true);
       }
@@ -220,13 +280,16 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     if (!isHistoryLoaded) return;
 
     const saveChatHistory = async () => {
+      const updatedChatHistory = chatHistory.map((chat) =>
+        chat.id === currentChatId ? { ...chat, messages } : chat
+      );
       try {
         await fetch(
           "https://charliebessell.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, sessionId, messages }),
+            body: JSON.stringify({ email: userEmail, sessionId, messages: updatedChatHistory }),
           }
         );
       } catch (error) {
@@ -235,7 +298,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     };
     saveChatHistory();
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, userEmail, sessionId, isHistoryLoaded]);
+  }, [messages, userEmail, sessionId, currentChatId, chatHistory, isHistoryLoaded]);
 
   // Generate a random filename
   const generateRandomFilename = () => {
@@ -243,13 +306,52 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     return `client_brief_${randomString}.pdf`;
   };
 
+  // Start a new chat
+  const startNewChat = () => {
+    const newChatId = generateChatId();
+    const newChat = {
+      id: newChatId,
+      messages: initialMessages,
+      title: "New Chat",
+    };
+    setChatHistory([newChat, ...chatHistory]);
+    setCurrentChatId(newChatId);
+    setMessages(initialMessages);
+    setFile(null);
+    setUserInput("");
+  };
+
+  // Select a chat from history
+  const selectChat = (chatId) => {
+    const selectedChat = chatHistory.find((chat) => chat.id === chatId);
+    if (selectedChat) {
+      setCurrentChatId(chatId);
+      setMessages(selectedChat.messages);
+      setFile(null);
+      setUserInput("");
+    }
+  };
+
   // Send message to AI agent webhook
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!userInput.trim()) return;
 
-    const userMessage = { text: userInput, sender: "user" };
+    const userMessage = {
+      text: userInput,
+      sender: "user",
+      timestamp: new Date().toLocaleTimeString(),
+    };
     setMessages((prev) => [...prev, userMessage]);
+
+    setChatHistory((prev) =>
+      prev.map((chat) =>
+        chat.id === currentChatId && chat.title === "New Chat"
+          ? { ...chat, title: userInput.slice(0, 30) + "..." }
+          : chat
+      )
+    );
+
     setUserInput("");
     setIsTyping(true);
 
@@ -268,18 +370,18 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       if (data.output) {
         setMessages((prev) => [
           ...prev,
-          { text: data.output, sender: "bot" },
+          { text: data.output, sender: "bot", timestamp: new Date().toLocaleTimeString() },
         ]);
       } else {
         setMessages((prev) => [
           ...prev,
-          { text: "No response from the AI agent.", sender: "bot" },
+          { text: "No response from the AI agent.", sender: "bot", timestamp: new Date().toLocaleTimeString() },
         ]);
       }
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { text: "Error processing your message. Please try again.", sender: "bot" },
+        { text: "Error processing your message. Please try again.", sender: "bot", timestamp: new Date().toLocaleTimeString() },
       ]);
     } finally {
       setIsTyping(false);
@@ -292,7 +394,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     if (!selectedFile || selectedFile.type !== "application/pdf") {
       setMessages((prev) => [
         ...prev,
-        { text: "Please upload a valid PDF file.", sender: "bot" },
+        { text: "Please upload a valid PDF file.", sender: "bot", timestamp: new Date().toLocaleTimeString() },
       ]);
       return;
     }
@@ -300,7 +402,10 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     setFile(selectedFile);
     setIsUploading(true);
     setIsTyping(true);
-    setMessages((prev) => [...prev, { text: "Processing file...", sender: "bot" }]);
+    setMessages((prev) => [
+      ...prev,
+      { text: `Uploading ${selectedFile.name}...`, sender: "bot", timestamp: new Date().toLocaleTimeString() },
+    ]);
 
     const randomFilename = generateRandomFilename();
 
@@ -327,38 +432,31 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       if (data.output) {
         setMessages((prev) => [
           ...prev,
-          { text: "File processed successfully!", sender: "bot" },
-          { text: data.output, sender: "bot" },
+          { text: "File processed successfully!", sender: "bot", timestamp: new Date().toLocaleTimeString() },
+          { text: data.output, sender: "bot", timestamp: new Date().toLocaleTimeString() },
         ]);
       } else {
         setMessages((prev) => [
           ...prev,
-          { text: "No response from the AI agent for parsing.", sender: "bot" },
+          { text: "No response from the AI agent for parsing.", sender: "bot", timestamp: new Date().toLocaleTimeString() },
         ]);
       }
     } catch (error) {
       console.error("Error:", error);
       setMessages((prev) => [
         ...prev,
-        { text: "Error processing file. Please try again.", sender: "bot" },
+        { text: "Error processing file. Please try again.", sender: "bot", timestamp: new Date().toLocaleTimeString() },
       ]);
     } finally {
       setIsUploading(false);
       setIsTyping(false);
       setFile(null);
-      setPdfThumbnail(null);
-      if (fileInputRef.current) fileInputRef.current.value = ""; // Reset file input
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   const handlePaperclipClick = () => {
     fileInputRef.current?.click();
-  };
-
-  const resetChat = () => {
-    setMessages(initialMessages);
-    setFile(null);
-    setPdfThumbnail(null);
   };
 
   const handleLogout = () => {
@@ -370,71 +468,117 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     onLogout();
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <div className="chat-container">
-      <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo" />
-      <h1>Recruitment Assistant</h1>
-      <div className="chat-box">
-        <div className="messages">
-          {messages.map((msg, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`message ${msg.sender === "bot" ? "bot-message" : "user-message"}`}
-            >
-              {msg.text}
-            </motion.div>
-          ))}
+    <div className="app-container">
+      <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle sidebar">
+        ☰
+      </button>
+      <motion.div
+        className={`sidebar ${sidebarOpen ? "" : "sidebar-hidden"}`}
+        initial={{ x: "-100%" }}
+        animate={{ x: sidebarOpen ? 0 : "-100%" }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
+        <img src="/als-logo-retina.jpg" alt="ALS International Logo" className="chat-logo" />
+        <h1>Recruitment Assistant</h1>
+        <button className="restart_button" onClick={startNewChat}>
+          New Chat
+        </button>
+        <div className="chat-history">
+          <h2>History</h2>
+          {chatHistory.length > 0 ? (
+            <ul>
+              {chatHistory.map((chat) => (
+                <li
+                  key={chat.id}
+                  className={`chat-history-item ${chat.id === currentChatId ? "active" : ""}`}
+                  onClick={() => selectChat(chat.id)}
+                >
+                  {chat.title}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No chat history yet.</p>
+          )}
+        </div>
+        <button className="logout_button" onClick={handleLogout}>
+          Logout
+        </button>
+        <p className="poweredby">Powered by</p>
+        <img src="/inlogic_logo_white.png" alt="InLogic Logo" className="inlogic_logo" />
+      </motion.div>
+      <div className="chat-container">
+        <div className="chat-box">
+          <div className="messages" role="log" aria-live="polite">
+            {messages.map((msg, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`message ${msg.sender === "bot" ? "bot-message" : "user-message"}`}
+              >
+                {msg.text}
+                <small>{msg.timestamp}</small>
+              </motion.div>
+            ))}
+            {success && <p className="success-message">{success}</p>}
+            {file && <p className="file-upload-feedback">Selected: {file.name}</p>}
+            <div ref={messagesEndRef} style={{ height: "1px" }} />
+          </div>
           {isTyping && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="message bot-message"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="typing-indicator"
             >
-              <div className="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
+              <span></span>
+              <span></span>
+              <span></span>
             </motion.div>
           )}
-          {success && <p className="success-message">{success}</p>}
-          <div ref={messagesEndRef} style={{ height: "1px" }} />
-        </div>
-        <form onSubmit={handleSendMessage} className="input-container">
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Type your message here..."
-            className="input-box"
-          />
-          <button type="button" onClick={handlePaperclipClick}>
-            <img src="/paperclip_icon_als.png" alt="Upload icon" className="paperclip-icon" />
-          </button>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileSelect}
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
-          <button type="submit" className="send-message-button" disabled={!userInput.trim()}>
-            <img src="/send_icon_als.png" alt="Send icon" className="send-icon" />
-          </button>
-        </form>
-        <div className="button-container">
-          <button className="restart_button" onClick={resetChat}>
-            Reset Chat
-          </button>
-          <button className="logout_button" onClick={handleLogout}>
-            Logout
-          </button>
+          <form onSubmit={handleSendMessage} className="input-container">
+            <div className="input-wrapper">
+              {userInput === "" && (
+                <span className="input-placeholder">Message Recruitment Assistant...</span>
+              )}
+              <input
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className="input-box"
+                aria-label="Message input"
+                ref={inputRef}
+              />
+            </div>
+            <div className="input-buttons">
+              <button type="button" onClick={handlePaperclipClick} className="attach-button" aria-label="Upload file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-[2]">
+                  <path d="M10 9V15C10 16.1046 10.8954 17 12 17V17C13.1046 17 14 16.1046 14 15V7C14 4.79086 12.2091 3 10 3V3C7.79086 3 6 4.79086 6 7V15C6 18.3137 8.68629 21 12 21V21C15.3137 21 18 18.3137 18 15V8" stroke="currentColor" />
+                </svg>
+              </button>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileSelect}
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                aria-hidden="true"
+              />
+              <button type="submit" className="send-message-button" disabled={!userInput.trim()} aria-label="Send message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-[2]">
+                  <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <p className="poweredby">Powered by</p>
-      <img src="/inlogic_logo_white.png" alt="inlogic_logo" className="inlogic_logo" />
     </div>
   );
 };

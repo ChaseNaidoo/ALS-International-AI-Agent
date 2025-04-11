@@ -1,107 +1,196 @@
-/* Reset default margins and padding */
+/* App.css */
+
+/* Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Main container */
-.chat-container {
-  background-image: url(./assets/shanghai_background.jpg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
-  overflow: hidden;
-  padding-right: 1.5%;
-  position: relative;
-  font-family: "Lato", Arial, Helvetica, sans-serif;
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #f7f7f7;
 }
 
-/* Chat box container */
-.chat-box {
+/* CSS Variables for Theming */
+:root {
+  --primary: #00a2b2;
+  --background: #f7f7f7;
+  --chat-bg: #ffffff;
+  --sidebar-bg: #1a1a1a;
+  --text: #1a1a1a;
+  --user-bg: #e5e5e5;
+  --bot-bg: #ffffff;
+  --border: #d9d9d9;
+  --shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  --error: #ff4d4f;
+  --success: #52c41a;
+  --surface-l2: #f9fafb; /* Light background for input container */
+  --border-l1: #e5e7eb; /* Default border */
+  --border-l2: #00a2b2; /* Hover/focus border */
+  --fg-primary: #1a1a1a; /* Primary text color */
+  --fg-secondary: #6b7280; /* Secondary text color (placeholder, icons) */
+  --button-ghost-hover: #f3f4f6; /* Hover background for buttons */
+  --button-filled: #00a2b2; /* Submit button background */
+  --warm-gray-100: #f5f5f5; /* Disabled button background */
+}
+
+/* Main Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
   width: 100%;
-  height: 100vh;
-  max-height: 88%;
-  max-width: 63%;
-  margin-bottom: 2%;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: var(--sidebar-bg);
+  color: #ffffff;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  padding: 35px 0 4% 20px;
-  border: 3px solid rgba(255, 255, 255, 0.30);
-  border-radius: 15px;
+  gap: 1rem;
+  transition: transform 0.15s ease;
+  position: relative;
+}
+
+.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+/* Hamburger Button */
+.hamburger {
   position: absolute;
-  z-index: 1;
+  top: 1.30rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #00a2b2;
+  z-index: 20;
 }
 
-/* Messages container */
-.messages {
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-arrow-color: transparent;
-  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+.chat-logo {
+  width: 170px;
+  height: auto;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+.sidebar h1 {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.poweredby {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-top: auto;
+}
+
+.inlogic_logo {
+  width: 90px;
+  margin-top: 0.5rem;
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 80%;
-  gap: 8px;
-  padding-left: 1%;
-  margin-bottom: -62%;
-  z-index: 3;
+  background: var(--background);
+  overflow: hidden;
 }
 
-/* Chat message bubbles */
-.message {
-  padding: 10px;
-  border-radius: 8px;
-  max-width: 40%;
-  word-wrap: break-word;
-}
-
-/* Bot messages */
-.bot-message {
-  background-color: #00A2B2;
-  color: white;
-  align-self: flex-start;
-  border-radius: 10px 10px 10px 0;
-  padding: 10px 20px;
-}
-
-/* User messages */
-.user-message {
-  background-color: white;
-  color: #00A2B2;
-  align-self: flex-end;
-  margin-right: 30px;
-  border-radius: 10px 10px 0 10px;
-  padding: 10px 20px;
-}
-
-/* Typing indicator */
-.typing-indicator {
+/* Chat Box */
+.chat-box {
+  flex: 1;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--background);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Messages */
+.messages {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+
+/* Message Styles */
+.message {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  line-height: 1.5;
+  font-size: 1rem;
+  position: relative;
+}
+
+.message small {
+  font-size: 0.7rem;
+  opacity: 0.5;
+  margin-top: 0.25rem;
+  display: block;
+  text-align: right;
+}
+
+.bot-message {
+  background: var(--bot-bg);
+  color: var(--text);
+  align-self: flex-start;
+  border-radius: 12px 12px 12px 0;
+  box-shadow: var(--shadow);
+}
+
+.user-message {
+  background: var(--user-bg);
+  color: var(--text);
+  align-self: flex-end;
+  border-radius: 12px 12px 0 12px;
+  box-shadow: var(--shadow);
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  background: var(--bot-bg);
+  display: flex;
+  gap: 0.3rem;
+  padding: 1rem;
+  align-self: flex-start;
+  border-radius: 12px 12px 12px 0;
+  box-shadow: var(--shadow);
 }
 
 .typing-indicator span {
   width: 6px;
   height: 6px;
-  margin-top: 6px;
-  margin-left: 2px;
-  margin-right: 2px;
-  background-color: rgb(255, 255, 255);
+  background: #999;
   border-radius: 50%;
-  display: inline-block;
-  animation: typing 1.5s infinite ease-in-out;
+  animation: typing 1.2s infinite ease-in-out;
 }
 
 .typing-indicator span:nth-child(1) { animation-delay: 0s; }
@@ -109,870 +198,474 @@
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-  0% { opacity: 0.3; transform: translateY(0px); }
-  50% { opacity: 1; transform: translateY(-5px); }
-  100% { opacity: 0.3; transform: translateY(0px); }
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* Input area */
+/* Input Container */
 .input-container {
-  margin-top: 67%;
-  margin-left: 1%;
-  margin-bottom: 1%;
+  max-width: 768px;
+  width: 100%;
+  margin: 1rem auto;
+  background: var(--surface-l2);
+  border-radius: 1.5rem; /* rounded-3xl */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-l1);
+  transition: border-color 0.3s ease;
+  position: sticky;
+  bottom: 0;
+  overflow: hidden;
+  padding: 0.5rem 0.75rem; /* Consistent padding */
   display: flex;
-  padding-left: 20px;
-  width: 96%;
-  height: 50px;
-  border-radius: 15px;
-  gap: 30px;
-  background-color: white;
-  z-index: 2;
-  align-items: center;
-  transition: 0.3s;
+  flex-direction: column; /* Stack input and buttons vertically */
+  gap: 0.5rem; /* Space between input and buttons */
 }
 
-.input-container:hover {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+.input-container:hover,
+.input-container:focus-within {
+  border-color: var(--border-l2);
 }
 
-/* Input field */
+/* Input Wrapper (for input and placeholder) */
+.input-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.input-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.75rem 0.5rem; /* Adjusted padding to align with input */
+  color: var(--fg-secondary);
+  pointer-events: none;
+  font-size: 1rem;
+  transition: opacity 0.2s ease; /* Smooth transition for disappearing */
+}
+
 .input-box {
-  background-color: white;
-  flex: 1;
-  padding: 10px 5px 9px 0;
-  font-size: 14px;
+  width: 100%;
+  padding: 0.75rem 0.5rem 0.5rem 0.5rem; /* Adjusted padding */
+  background: transparent;
   border: none;
   outline: none;
+  font-size: 1rem;
+  color: var(--fg-primary);
+  resize: none;
+  overflow-y: auto;
+  max-height: 100px;
+  line-height: 1.5;
 }
 
-/* Fixed-size icons */
-.send, 
-.send-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: -60%;
-  margin-right: 1px;
-  transition: 0.3s;
-  cursor: pointer;
+.input-box::placeholder {
+  color: transparent; /* Hide default placeholder since we use a span */
 }
 
-.send-icon:hover {
-  filter: drop-shadow(0 0 10px #aaf8ff) drop-shadow(0 0 15px #aaf8ff) drop-shadow(0 0 50px #aaf8ff);
+/* Input Buttons Container */
+.input-buttons {
+  display: flex;
+  gap: 0.375rem; /* gap-1.5 */
+  justify-content: flex-end; /* Align buttons to the right */
 }
 
-.paperclip-icon {
-  width: 28px;
-  height: 28px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  padding: 1px;
+/* Attach Button (Paperclip) */
+.attach-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; /* h-9 */
+  height: 2.25rem;
   border-radius: 50%;
-  transition: 0.3s;
-}
-
-.paperclip-icon:hover {
-  filter: drop-shadow(0 0 10px #aaf8ff) drop-shadow(0 0 15px #aaf8ff) drop-shadow(0 0 50px #aaf8ff);
-}
-
-/* Fixed button styling */
-.send-button {
-  background-color: #00A2B2;
-  color: white;
-  padding: 8px 24px;
-  margin-top: 3%;
-  margin-bottom: 1.5%;
-  margin-left: -1%;
+  background: transparent;
+  border: 1px solid var(--border-l1);
+  color: var(--fg-secondary);
   cursor: pointer;
-  font-size: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.65);
-  border-radius: 25px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
-.send-button:hover {
-  background-color: #ffffff60;
+.attach-button:hover {
+  border-color: var(--border-l2);
+  color: var(--primary);
+  background: var(--button-ghost-hover);
 }
 
+/* Send Button */
+.send-message-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; /* h-9 */
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #00a2b2;
+  border: none;
+  color: #ffffff; /* White icon color for contrast */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.send-message-button:disabled {
+  background: var(--warm-gray-100);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.send-message-button svg {
+  width: 1.25rem; /* width: 20px */
+  height: 1.25rem;
+}
+
+/* Restart and Logout Buttons */
 .restart_button {
-  background-color: transparent;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  border-width: 1px;
-  border-color: rgba(255, 255, 255);
-  border-radius: 25px;
-  padding: 6px 8px;
-  font-size: 14px;
-  width: 13%;
-  margin-left: 1%;
-  margin-top: 1%;
-  margin-bottom: 1%;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: 0.3s;
-  position: absolute;
-  bottom: 0;
+  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 
 .restart_button:hover {
-  filter: drop-shadow(0 0 0px #00A2B2) drop-shadow(0 0 0px #00A2B2) drop-shadow(0 0 100px #00A2B2);
-  background-color: #ffffff50;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .logout_button {
-  background-color: rgba(255, 255, 255, 0.20);
+  background: var(--error);
+  border: none;
   color: white;
-  border-width: 2px;
-  border-color: rgba(255, 255, 255, 0.50);
-  border-radius: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  width: 10%;
-  position: absolute;
-  margin-top: -5.5%;
-  margin-right: -1%; /* Adjusted to align with container padding */
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: 0.3s;
-  z-index: 3; /* Higher than chat-box to appear above it */
+  font-size: 0.9rem;
+  transition: 0.3s ease-in-out;
 }
 
 .logout_button:hover {
-  background-color: #cd3535;
-  filter: drop-shadow(0 0 10px #cd3535) drop-shadow(0 0 10px #cd3535) drop-shadow(0 0 50px #cd3535);
-  border-color: rgba(255, 255, 255, 0.70);
+  background: #d9363e;
+  filter: drop-shadow(0 0 1px #d9363e) drop-shadow(0 0 0 #d9363e) drop-shadow(0 0 10px #d9363e);
 }
 
-.browse_files_button {
-  background-color: #00A2B2;
-  color: white;
-  border-width: 2px;
-  border-radius: 25px;
-  border-color: rgba(255, 255, 255, 0.65);
-  padding: 8px 24px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.3s;
+/* Success and Error Messages */
+.success-message,
+.error-message {
+  font-size: 0.9rem;
+  padding: 1rem;
+  align-self: center;
 }
 
-.browse_files_button:hover {
-  background-color: #ffffff60;
-  color: white;
+.success-message {
+  color: var(--success);
 }
 
-/* Modified logo and header styling */
-.chat-logo {
-  position: absolute;
-  top: 2%;
-  left: 1.5%;
-  width: 200px;
-  z-index: 2;
+.error-message {
+  color: var(--error);
 }
 
-.chat-container h1 {
-  font-size: 34px;
-  color: white;
-  position: absolute;
-  left: 1.5%;
-  top: 12%;
-  z-index: 2;
+/* File Upload Feedback */
+.file-upload-feedback {
+  font-size: 0.9rem;
+  color: #666;
+  padding: 1rem;
+  align-self: center;
 }
 
-/* Added poweredby styling */
-.poweredby {
-  position: absolute;
-  left: 1.5%;
-  top: 18%;
-  color: white;
-  font-size: 16px;
-  z-index: 2;
-}
-
-.inlogic_logo {
-  position: absolute;
-  width: 150px;
-  top: 22%;
-  left: 1.5%;
-  z-index: 2;
-}
-
-/* Media Queries */
-
-/* Small Mobile (≤320px) */
-@media screen and (max-width: 320px) {
-  .chat-container {
-    padding-right: 0;
-  }
-
-  .chat-box {
-    max-width: 96%;
-    max-height: 85%;
-    padding: 20px 0 20px 10px;
-    margin-top: 20%;
-    margin-bottom: 5%;
-    margin-right: 2%;
-  }
-
-  .messages {
-    margin-bottom: -50%;
-    min-height: 80%;
-  }
-
-  .message {
-    max-width: 80%;
-    font-size: 12px;
-  }
-
-  .user-message {
-    margin-right: 12px;
-  }
-
-  .input-container {
-    margin-top: 65%;
-    padding-left: 10px;
-    margin-bottom: 15%;
-    height: 40px;
-    gap: 10px;
-  }
-
-  .input-box {
-    font-size: 10px;
-  }
-
-  .chat-logo {
-    width: 70%;
-    top: 1.5%;
-    margin-left: 2%;
-  }
-
-  .chat-container h1 {
-    font-size: 16px;
-    top: 8%;
-    margin-left: 2%;
-  }
-
-  .poweredby {
-    display: none;
-  }
-
-  .inlogic_logo {
-    display: none;
-  }
-
-  .restart_button {
-    width: 30%;
-    margin-left: 1%;
-    bottom: 2%;
-    font-size: 10px;
-  }
-
-  .send-icon {
-    height: 16px;
-    width: 16px;
-  }
-
-  .paperclip-icon {
-    height: 22px;
-    width: 22px;
-    margin-right: 10px;
-  }
-
-  .logout_button {
-    width: 22%;
-    top: -11.5%;
-    right: 0.5%;
-  }
-
-  .switch-link {
-    margin-bottom: 10%;
-  }
-
-  .powered-by-login {
-    font-size: 12px;
-    margin-bottom: 1%;
-  }
-}
-
-/* Small Mobile (321px–376px) */
-@media screen and (min-width: 321px) and (max-width: 376px) {
-  .chat-box {
-    max-width: 95%;
-    max-height: 85%;
-    padding: 20px 0 20px 10px;
-    margin-top: 20%;
-    margin-bottom: 5%;
-  }
-
-  .messages {
-    margin-bottom: -50%;
-  }
-
-  .message {
-    max-width: 70%;
-    font-size: 12px;
-  }
-
-  .input-container {
-    margin-top: 70%;
-    height: 40px;
-    gap: 15px;
-  }
-
-  .input-box {
-    font-size: 10px;
-  }
-
-  .chat-logo {
-    width: 120px;
-    top: 1%;
-  }
-
-  .chat-container h1 {
-    font-size: 16px;
-    top: 9%;
-  }
-
-  .poweredby {
-    font-size: 12px;
-    top: 13%;
-  }
-
-  .inlogic_logo {
-    width: 100px;
-    top: 16%;
-  }
-
-  .restart_button {
-    width: 20%;
-    margin-left: 1%;
-    bottom: 2%;
-  }
-
-  .send-icon {
-    height: 16px;
-    width: 16px;
-    margin-right: 5px;
-  }
-
-  .paperclip-icon {
-    height: 22px;
-    width: 22px;
-    margin-right: 10px;
-  }
-
-  .switch-link {
-    margin-bottom: 10%;
-  }
-
-  .powered-by-login {
-    font-size: 12px;
-    margin-bottom: 1%;
-  }
-
-  .logout_button {
-    width: 15%;
-    top: 1%;
-    right: 1%;
-  }
-}
-
-/* Medium Mobile (374px–480px) */
-@media screen and (min-width: 374px) and (max-width: 480px) {
-  .chat-box {
-    max-width: 95%;
-    max-height: 85%;
-    padding: 20px 0 20px 10px;
-    margin-top: 20%;
-    margin-bottom: 3%;
-    margin-right: 1%;
-  }
-
-  .messages {
-    margin-bottom: -50%;
-  }
-
-  .message {
-    max-width: 70%;
-    font-size: 12px;
-  }
-
-  .input-container {
-    margin-top: 55%;
-    margin-bottom: 12%;
-    height: 40px;
-    gap: 15px;
-  }
-
-  .input-box {
-    font-size: 10px;
-  }
-
-  .chat-logo {
-    width: 74%;
-    top: 1%;
-    margin-left: 2%;
-  }
-
-  .chat-container h1 {
-    font-size: 16px;
-    top: 9%;
-    margin-left: 2%;
-  }
-
-  .poweredby {
-    display: none;
-  }
-
-  .inlogic_logo {
-    display: none;
-  }
-
-  .restart_button {
-    width: 25%;
-    margin-left: 1%;
-    bottom: 2%;
-    font-size: 10px;
-  }
-
-  .send-icon {
-    height: 16px;
-    width: 16px;
-    margin-right: 5px;
-  }
-
-  .paperclip-icon {
-    height: 22px;
-    width: 22px;
-    margin-right: 10px;
-  }
-
-  .switch-link {
-    margin-bottom: 10%;
-  }
-
-  .powered-by-login {
-    font-size: 12px;
-    margin-bottom: 1%;
-  }
-
-  .logout_button {
-    width: 18%;
-    top: -12.5%;
-    right: 0.5%;
-  }
-}
-
-/* Large Mobile (481px–767px) */
-@media screen and (min-width: 481px) and (max-width: 767px) {
-  .chat-box {
-    max-width: 90%;
-    max-height: 85%;
-    padding: 25px 0 3% 15px;
-  }
-
-  .messages {
-    margin-bottom: -55%;
-  }
-
-  .message {
-    max-width: 65%;
-    font-size: 14px;
-  }
-
-  .input-container {
-    margin-top: 60%;
-  }
-
-  .chat-logo {
-    width: 160px;
-    top: 1%;
-  }
-
-  .chat-container h1 {
-    font-size: 24px;
-    top: 11%;
-  }
-
-  .poweredby {
-    font-size: 14px;
-    top: 16%;
-  }
-
-  .inlogic_logo {
-    width: 130px;
-    top: 19%;
-  }
-
-  .restart_button {
-    width: 15%;
-    margin-left: 1%;
-    bottom: 2%;
-  }
-
-  .logout_button {
-    width: 12%;
-    top: 1%;
-    right: 1%;
-  }
-}
-
-/* Tablets (768px–1023px) */
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-  .chat-box {
-    max-width: 97%;
-    max-height: 80%;
-    padding: 30px 0 3.5% 20px;
-  }
-
-  .messages {
-    margin-bottom: -55%;
-    min-height: 75%;
-  }
-
-  .message {
-    max-width: 60%;
-  }
-
-  .input-container {
-    margin-top: 60%;
-    margin-bottom: 6%;
-  }
-
-  .chat-logo {
-    width: 50%;
-    margin-left: 1%;
-    top: 2%;
-  }
-
-  .chat-container h1 {
-    font-size: 24px;
-    margin-left: 1%;
-    top: 12.2%;
-  }
-
-  .poweredby {
-    display: none;
-  }
-
-  .inlogic_logo {
-    display: none;
-  }
-
-  .restart_button {
-    width: 15%;
-    margin-left: 1%;
-    bottom: 2%;
-  }
-
-  .logout_button {
-    width: 12%;
-    top: -14%;
-    right: 1%;
-  }
-}
-
-/* Small Laptops (1024px–1439px) */
-@media screen and (min-width: 1024px) and (max-width: 1439px) {
-  .chat-box {
-    max-width: 65%;
-    max-height: 93%;
-    padding: 20px 0 5% 0;
-    margin-top: 2%;
-    margin-bottom: 0.5%;
-  }
-
-  .messages {
-    margin-bottom: -50%;
-    margin-left: 3%;
-  }
-
-  .message {
-    max-width: 50%;
-    font-size: 12px;
-  }
-
-  .input-container {
-    margin-top: 64%;
-    margin-left: 3%;
-    width: 93%;
-  }
-
-  .chat-logo {
-    width: 30%;
-    top: 7%;
-  }
-
-  .chat-container h1 {
-    font-size: 26px;
-    top: 15%;
-  }
-
-  .poweredby {
-    font-size: 14px;
-    top: 20%;
-  }
-
-  .inlogic_logo {
-    width: 140px;
-    top: 23%;
-    margin-left: -1.5%;
-  }
-
-  .restart_button {
-    width: 15%;
-    margin-left: 3%;
-    bottom: 0.3%;
-  }
-
-  .send-icon {
-    height: 18px;
-    width: 18px;
-    margin-right: 5px;
-  }
-
-  .paperclip-icon {
-    height: 24px;
-    width: 24px;
-    margin-right: 5px;
-  }
-
-  .logout_button {
-    width: 12%;
-    top: -1%;
-    right: 0.5%;
-  }
-}
-
-/* Large Laptops (1440px+) */
-@media screen and (min-width: 1440px) {
-  .chat-box {
-    max-width: 63%;
-    max-height: 88%;
-  }
-
-  .messages {
-    margin-bottom: -62%;
-  }
-
-  .message {
-    max-width: 40%;
-  }
-
-  .input-container {
-    margin-top: 67%;
-  }
-
-  .chat-logo {
-    width: 33%;
-    top: 8%;
-  }
-
-  .chat-container h1 {
-    font-size: 34px;
-    top: 21%;
-  }
-
-  .poweredby {
-    font-size: 16px;
-    top: 28%;
-  }
-
-  .inlogic_logo {
-    width: 150px;
-    top: 32%;
-    left: 0.5%;
-  }
-
-  .restart_button {
-    width: 13%;
-    margin-left: 1%;
-    bottom: 1%;
-  }
-
-  .logout_button {
-    width: 10%;
-    top: -0.5%;
-    right: 1.5%;
-  }
-}
-
-/* Login/Signup Containers */
+/* Login and Signup Containers */
 .login-container,
 .signup-container {
-  background-image: url(./assets/london_background.jpg);
-  background-size: cover;
-  background-position: center;
   height: 100vh;
-  width: 100vw;
-  font-family: "Lato", Arial, Helvetica, sans-serif;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: var(--background);
   overflow: hidden;
-  position: relative;
 }
 
 .login-box,
 .signup-box {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(20px);
-  padding: 40px;
-  height: 85%;
-  width: 45%;
+  background: var(--chat-bg);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
   text-align: center;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
+  border-radius: 6px;
+  box-shadow: var(--shadow);
 }
 
-.subheading {
-  font-size: 18px;
-  color: #ffffff;
-  margin-bottom: 4%;
-  margin-top: 4%;
+.chat-logo-login,
+.chat-logo-signup {
+  width: 140px;
+  margin-bottom: 1rem;
 }
 
-.login-input {
+.subheading,
+.subheading-signup {
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.login-input,
+.signup-input {
   width: 100%;
-  padding: 12px 20px;
-  margin: 10px 0;
-  border: 2px solid #ffffff80;
-  background-color: #ffffff60;
-  font-size: 14px;
-  border-radius: 15px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 1rem;
+  border-radius: 4px;
   outline: none;
-  transition: 0.3s;
+  transition: border-color 0.2s;
 }
 
-.login-input:focus {
-  border-color: white;
-  background-color: rgba(255, 255, 255, 0.80);
+.login-input:focus,
+.signup-input:focus {
+  border-color: var(--primary);
 }
 
-.login-input:hover {
-  background-color: rgba(255, 255, 255, 0.80);
-}
-
-/* Fixed login/signup button styling */
-.login-button {
-  background-color: #00A2B2;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  border-radius: 15px;
+.login-button,
+.signup-button {
+  background: var(--primary);
+  border: none;
   color: white;
-  padding: 12px 40px;
-  font-size: 16px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 4px;
   cursor: pointer;
   width: 100%;
-  transition: 0.3s;
-  margin-top: 30px;
+  margin: 1rem 0;
+  transition: background 0.2s;
 }
 
-.login-button:hover {
-  background-color: #40bdc9;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
+.login-button:hover,
+.signup-button:hover {
+  background: #0088cc;
 }
 
-.login-button:disabled {
-  background-color: #40bdc9;
+.login-button:disabled,
+.signup-button:disabled {
+  background: #ccc;
   cursor: not-allowed;
-}
-
-/* Switch Links (for both login and signup) */
-.switch-link {
-  color: #ffffff;
-  font-size: 14px;
-  margin-top: -20%;
-  cursor: pointer;
-  text-decoration: underline;
-  transition: 0.3s;
-}
-
-.switch-link:hover {
-  color: #40bdc9;
 }
 
 .powered-by-login {
-  color: white;
-  margin-top: 20%;
-  position: relative;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 1rem;
 }
 
-/* Input Fields */
-.signup-input {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 10px 0;
-  border: 2px solid #ffffff80;
-  background-color: #ffffff60;
-  font-size: 14px;
-  border-radius: 15px;
-  outline: none;
-  transition: 0.3s;
-}
-
-.signup-input:focus {
-  border-color: white;
-  background-color: rgba(255, 255, 255, 0.80);
-}
-
-.signup-input:hover {
-  background-color: rgba(255, 255, 255, 0.80);
-}
-
-.subheading-signup {
-  font-size: 18px;
-  color: #ffffff;
-  margin-bottom: 4%;
-  margin-top: 4%;
-}
-
-.signup-button {
-  background-color: #00A2B2;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  border-radius: 15px;
-  color: white;
-  padding: 12px 40px;
-  font-size: 16px;
+.switch-link {
+  font-size: 0.9rem;
+  color: var(--primary);
   cursor: pointer;
-  width: 100%;
-  transition: 0.3s;
-  margin-top: 30px;
+  text-decoration: none;
+  margin-top: 1rem;
+  display: inline-block;
 }
 
-.signup-button:hover {
-  background-color: #40bdc9;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
+.switch-link:hover {
+  text-decoration: underline;
 }
 
-.signup-button:disabled {
-  background-color: #40bdc9;
-  cursor: not-allowed;
+/* Chat History in Sidebar */
+.chat-history {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
 }
 
-/* Responsive adjustments for login/signup */
-@media screen and (max-width: 480px) {
+.chat-history h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.chat-history ul {
+  list-style: none;
+  padding: 0;
+}
+
+.chat-history-item {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  color: #d9d9d9;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.chat-history-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-history-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.chat-history p {
+  color: #8c8c8c;
+  font-size: 0.9rem;
+}
+
+/* Ensure sidebar content is scrollable if needed */
+.sidebar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2b2b2b transparent;
+  scroll-behavior: smooth;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    z-index: 10;
+    transform: translateX(-100%);
+  }
+
+  .sidebar-hidden {
+    transform: translateX(-100%);
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .chat-box {
+    margin: 0;
+  }
+
+  .messages {
+    padding: 1rem 0.5rem;
+  }
+
+  .message {
+    max-width: 80%;
+    font-size: 0.9rem;
+  }
+
+  .input-container {
+    margin: 0.5rem;
+    border-radius: 1rem; /* Slightly smaller radius on mobile */
+  }
+
+  .input-box {
+    font-size: 0.9rem;
+  }
+
   .login-box,
   .signup-box {
-    width: 95%;
-    height: auto;
-    padding: 20px;
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-logo,
+  .inlogic_logo {
+    width: 100px;
+  }
+
+  .sidebar h1 {
+    font-size: 1rem;
+  }
+
+  .message {
+    max-width: 85%;
+    font-size: 0.85rem;
+  }
+
+  .input-box {
+    font-size: 0.85rem;
+  }
+
+  .input-placeholder {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.5rem;
+  }
+
+  .login-box,
+  .signup-box {
+    padding: 1rem;
+  }
+
+  .chat-logo-login,
+  .chat-logo-signup {
+    width: 120px;
+  }
+
+  .subheading,
+  .subheading-signup {
+    font-size: 1rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #2d2d2d;
+    --chat-bg: #3a3a3a;
+    --sidebar-bg: #1a1a1a;
+    --text: #d9d9d9;
+    --user-bg: #4a4a4a;
+    --bot-bg: #3a3a3a;
+    --border: #4a4a4a;
+    --surface-l2: #2d2d2d;
+    --border-l1: #4a4a4a;
+    --border-l2: #6b7280;
+    --fg-primary: #d9d9d9;
+    --fg-secondary: #9ca3af;
+    --button-ghost-hover: #4a4a4a;
+    --button-filled: #00a3ff;
+    --warm-gray-100: #4a4a4a;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--text);
+  }
+
+  .chat-box {
+    background: var(--background);
+  }
+
+  .input-container {
+    background: var(--surface-l2);
+    border-color: var(--border-l1);
+  }
+
+  .input-box {
+    color: var(--fg-primary);
+  }
+
+  .input-placeholder {
+    color: var(--fg-secondary);
+  }
+
+  .subheading,
+  .subheading-signup {
+    color: var(--text);
+  }
+
+  .powered-by-login {
+    color: #8c8c8c;
   }
 
   .login-input,
   .signup-input {
-    font-size: 12px;
-    padding: 10px 15px;
-  }
-}
-
-@media screen and (min-width: 481px) and (max-width: 767px) {
-  .login-box,
-  .signup-box {
-    width: 70%;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-  .login-box,
-  .signup-box {
-    width: 60%;
+    background: #4a4a4a;
+    border-color: var(--border);
+    color: var(--text);
   }
 }
