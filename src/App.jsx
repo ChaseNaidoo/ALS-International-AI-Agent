@@ -213,7 +213,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [success, setSuccess] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 765); // Default to true on larger screens
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 575); // Default to true on larger screens
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
