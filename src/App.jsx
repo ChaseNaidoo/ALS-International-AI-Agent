@@ -453,7 +453,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
       formData.append("email", userEmail);
       formData.append("sessionId", currentChatId);
-      formData.append("message", "Parse");
+      formData.append("chatInput", "Parse");
 
       const response = await fetch(AI_AGENT_WEBHOOK, {
         method: "POST",
