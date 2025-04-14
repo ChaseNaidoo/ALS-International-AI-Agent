@@ -212,7 +212,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [success, setSuccess] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768); // Default to true on larger screens
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
@@ -255,10 +255,8 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
             title: chat.messages[0]?.text.slice(0, 30) + "..." || "New Chat",
           }));
 
-          // Set chat history with all chats
           setChatHistory(loadedChats);
 
-          // Find and display current chat if it exists, else use first chat or default
           const currentChat = loadedChats.find((chat) => chat.id === currentChatId);
           if (currentChat) {
             setMessages(currentChat.messages);
@@ -266,21 +264,43 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
             setCurrentChatId(loadedChats[0].id);
             setMessages(loadedChats[0].messages);
           } else {
+            const newChat = { id: currentChatId, messages: initialMessages, title: "New Chat" };
+            setChatHistory([newChat]);
             setMessages(initialMessages);
-            setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
+            await saveInitialChat(currentChatId, [newChat]);
           }
         } else {
-          setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
+          const newChat = { id: currentChatId, messages: initialMessages, title: "New Chat" };
+          setChatHistory([newChat]);
           setMessages(initialMessages);
+          await saveInitialChat(currentChatId, [newChat]);
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
-        setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
+        const newChat = { id: currentChatId, messages: initialMessages, title: "New Chat" };
+        setChatHistory([newChat]);
         setMessages(initialMessages);
+        await saveInitialChat(currentChatId, [newChat]);
       } finally {
         setIsHistoryLoaded(true);
       }
     };
+
+    const saveInitialChat = async (chatId, chatHistoryToSave) => {
+      try {
+        await fetch(
+          "https://liamalbrecht.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail, currentChatId: chatId, messages: chatHistoryToSave }),
+          }
+        );
+      } catch (error) {
+        console.error("Failed to save initial chat history:", error);
+      }
+    };
+
     fetchChatHistory();
   }, [userEmail, sessionId]);
 
@@ -292,6 +312,10 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       const updatedChatHistory = chatHistory.map((chat) =>
         chat.id === currentChatId ? { ...chat, messages } : chat
       );
+      const currentChat = updatedChatHistory.find((chat) => chat.id === currentChatId);
+      if (JSON.stringify(currentChat.messages) === JSON.stringify(initialMessages)) {
+        return;
+      }
       try {
         await fetch(
           "https://liamalbrecht.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
