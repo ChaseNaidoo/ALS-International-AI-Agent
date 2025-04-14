@@ -64,6 +64,7 @@ body {
 
 /* Hamburger Button */
 .hamburger {
+  display: none;
   position: absolute;
   top: 1.30rem;
   left: 1rem;
@@ -76,15 +77,15 @@ body {
 }
 
 .chat-logo {
-  width: 170px;
+  width: 12rem;
   height: auto;
   margin-bottom: 1.5rem;
-  margin-left: 1.5rem;
 }
 
 .sidebar h1 {
   font-size: 1.1rem;
   font-weight: 500;
+  margin-top: -1.5rem;
 }
 
 .poweredby {
@@ -95,7 +96,8 @@ body {
 
 .inlogic_logo {
   width: 90px;
-  margin-top: 0.5rem;
+  margin-top: -0.5rem;
+  margin-left: -0.7rem;
 }
 
 /* Chat Container */
@@ -167,7 +169,7 @@ body {
 }
 
 .user-message {
-  background: var(--user-bg);
+  background: #00a2b2;
   color: var(--text);
   align-self: flex-end;
   border-radius: 12px 12px 0 12px;
@@ -294,10 +296,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem; /* h-9 */
+  width: 2.25rem;
   height: 2.25rem;
   border-radius: 50%;
   background: #00a2b2;
+  box-shadow:
+  /* Outerglow */ 0px 12px 40px rgb(0, 162, 178, 0.3),
+  /* Innerglow */ 0px -5px 10px rgba(0, 162, 178, 0.1) inset,
+  0px 0px 5px rgb(0, 162, 178, 1),
+  0px 1px 3px rgba(55,55,55,1);
+  -webkit-transition: all .3s cubic-bezier(1.000, -0.360, 0.000, 1.385);
   border: none;
   color: #ffffff; /* White icon color for contrast */
   cursor: pointer;
@@ -306,7 +314,8 @@ body {
 
 .send-message-button:disabled {
   background: var(--warm-gray-100);
-  cursor: not-allowed;
+  cursor: default;
+  box-shadow: none;
   opacity: 0.5;
 }
 
@@ -332,8 +341,7 @@ body {
 }
 
 .logout_button {
-  background: var(--error);
-  border: none;
+  background: rgba(255, 255, 255, 0.1);;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -343,8 +351,13 @@ body {
 }
 
 .logout_button:hover {
-  background: #d9363e;
-  filter: drop-shadow(0 0 1px #d9363e) drop-shadow(0 0 0 #d9363e) drop-shadow(0 0 10px #d9363e);
+  background: rgba(217, 54, 62, 1);
+  box-shadow:
+  /* Outerglow */ 0px 12px 40px rgba(217, 54, 62,.3),
+  /* Innerglow */ 0px -5px 10px rgba(217, 54, 62,.1) inset,
+  0px 0px 5px rgb(217, 54, 62, 1),
+  0px 1px 3px rgba(55,55,55,1);
+  -webkit-transition: all .3s cubic-bezier(1.000, -0.360, 0.000, 1.385);
 }
 
 /* Success and Error Messages */
@@ -426,7 +439,7 @@ body {
 
 .login-input:focus,
 .signup-input:focus {
-  border-color: var(--primary);
+  border-color: var(--border-l2);
 }
 
 .login-button,
@@ -446,11 +459,16 @@ body {
 .login-button:hover,
 .signup-button:hover {
   background: #00b8c9;
+  box-shadow:
+  /* Outerglow */ 0px 12px 40px rgb(0, 162, 178, 0.3),
+  0px 0px 2px rgb(0, 162, 178, 1),
+  0px 1px 1px rgba(55,55,55,1);
+  -webkit-transition: all .3s cubic-bezier(1.000, -0.360, 0.000, 1.385);
 }
 
 .login-button:disabled,
 .signup-button:disabled {
-  background: #ccc;
+  background: #006670;
   cursor: not-allowed;
 }
 
@@ -504,11 +522,11 @@ body {
 }
 
 .chat-history-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #00a3b233;
 }
 
 .chat-history-item.active {
-  background: rgba(255, 255, 255, 0.2);
+  background: #00a3b2;
   color: #ffffff;
 }
 
