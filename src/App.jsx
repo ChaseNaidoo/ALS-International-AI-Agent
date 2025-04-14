@@ -213,7 +213,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [success, setSuccess] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768); // Default to true on larger screens
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 765); // Default to true on larger screens
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
@@ -245,7 +245,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, sessionId }),
+            body: JSON.stringify({ email: userEmail, currentChatId }),
           }
         );
         const data = await response.json();
@@ -289,7 +289,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, sessionId, messages: updatedChatHistory }),
+            body: JSON.stringify({ email: userEmail, currentChatId, messages: updatedChatHistory }),
           }
         );
       } catch (error) {
@@ -358,7 +358,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     const formData = new FormData();
     formData.append("chatInput", userInput);
     formData.append("email", userEmail);
-    formData.append("sessionId", sessionId);
+    formData.append("sessionId", currentChatId);
 
     try {
       const response = await fetch(AI_AGENT_WEBHOOK, {
@@ -419,7 +419,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       const formData = new FormData();
       formData.append("file", new Blob([fileData], { type: "application/pdf" }), randomFilename);
       formData.append("email", userEmail);
-      formData.append("sessionId", sessionId);
+      formData.append("sessionId", currentChatId);
       formData.append("message", "Parse");
 
       const response = await fetch(AI_AGENT_WEBHOOK, {
