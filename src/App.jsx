@@ -1,4 +1,3 @@
-// App.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as pdfjsLib from "pdfjs-dist";
@@ -34,7 +33,7 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
 
     try {
       const response = await fetch(
-        "https://charliebessell.app.n8n.cloud/webhook/5ff43181-90e7-4b8a-b562-4b6d928d1798",
+        "https://liamalbrecht.app.n8n.cloud/webhook/5ff43181-90e7-4b8a-b562-4b6d928d1798",
         { method: "POST", body: formData }
       );
       const data = await response.json();
@@ -125,7 +124,7 @@ const Signup = ({ onSwitchToLogin }) => {
 
     try {
       const response = await fetch(
-        "https://charliebessell.app.n8n.cloud/webhook/bdf05aca-69e0-463d-a767-a2e3f39a226d",
+        "https://liamalbrecht.app.n8n.cloud/webhook/bdf05aca-69e0-463d-a767-a2e3f39a226d",
         { method: "POST", body: formData }
       );
       const data = await response.json();
@@ -219,7 +218,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
   const inputRef = useRef(null);
 
   // Webhook URLs
-  const AI_AGENT_WEBHOOK = "https://charliebessell.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
+  const AI_AGENT_WEBHOOK = "https://liamalbrecht.app.n8n.cloud/webhook/3acb8d3b-c821-4cce-8a54-d59082f246be/chat";
 
   // Auto-focus input on mount
   useEffect(() => {
@@ -236,16 +235,16 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch chat history on mount
+  // Fetch all chat histories for the user
   useEffect(() => {
     const fetchChatHistory = async () => {
       try {
         const response = await fetch(
-          "https://charliebessell.app.n8n.cloud/webhook/e3f02125-19bd-4c15-94bb-f18752e3c25a",
+          "https://liamalbrecht.app.n8n.cloud/webhook/e3f02125-19bd-4c15-94bb-f18752e3c25a",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, currentChatId }),
+            body: JSON.stringify({ email: userEmail }),
           }
         );
         const data = await response.json();
@@ -255,19 +254,29 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
             messages: chat.messages || initialMessages,
             title: chat.messages[0]?.text.slice(0, 30) + "..." || "New Chat",
           }));
+
+          // Set chat history with all chats
           setChatHistory(loadedChats);
-          if (loadedChats.length > 0) {
+
+          // Find and display current chat if it exists, else use first chat or default
+          const currentChat = loadedChats.find((chat) => chat.id === currentChatId);
+          if (currentChat) {
+            setMessages(currentChat.messages);
+          } else if (loadedChats.length > 0) {
             setCurrentChatId(loadedChats[0].id);
             setMessages(loadedChats[0].messages);
           } else {
             setMessages(initialMessages);
+            setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
           }
         } else {
           setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
+          setMessages(initialMessages);
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
         setChatHistory([{ id: currentChatId, messages: initialMessages, title: "New Chat" }]);
+        setMessages(initialMessages);
       } finally {
         setIsHistoryLoaded(true);
       }
@@ -285,7 +294,7 @@ const Chatbot = ({ userEmail, sessionId, onLogout }) => {
       );
       try {
         await fetch(
-          "https://charliebessell.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
+          "https://liamalbrecht.app.n8n.cloud/webhook/a1317ced-5acf-4f47-82da-50db3e9c53d4",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
